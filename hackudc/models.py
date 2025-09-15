@@ -1,5 +1,5 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 GENEROS = (
     ("HOMBRE", "Hombre"),
@@ -117,6 +117,7 @@ class Participante(models.Model):
     nivel_estudio = models.CharField(
         null=True,
         blank=True,
+        max_length=128,
         choices=NIVEL_ESTUDIOS,
         help_text="Nivel de estudios en curso.",
     )
