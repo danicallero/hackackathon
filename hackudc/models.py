@@ -31,7 +31,6 @@ class Persona(models.Model):
     genero = models.CharField(max_length=10, choices=GENEROS, null=True, blank=True)
     notas = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(unique=True, null=True, blank=True, default=None)
-    aceptado = models.BooleanField(default=False)
 
     restricciones_alimentarias = models.ManyToManyField(
         "RestriccionAlimentaria",
@@ -57,6 +56,7 @@ class Mentor(Persona):
         max_length=10, choices=TALLAS_CAMISETA, null=True, blank=True
     )
     compartir_cv = models.BooleanField(default=False)
+    aceptado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Mentor"
@@ -89,6 +89,7 @@ class Participante(Persona):
     )
     motivacion = models.TextField(null=True, blank=True)
     compartir_cv = models.BooleanField(default=False)
+    aceptado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Participante"
@@ -116,14 +117,14 @@ class Presencia(models.Model):
     participante = models.ForeignKey(
         Participante, on_delete=models.CASCADE, related_name="tiempo_acceso"
     )
-    fecha_entrada = models.DateTimeField()
-    fecha_salida = models.DateTimeField()
+    entrada = models.DateTimeField()
+    salida = models.DateTimeField(null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = "Presencia"
         verbose_name_plural = "Presencias"
 
-        unique_together = ("participante", "fecha_entrada", "fecha_salida")
+        unique_together = ("participante", "entrada", "salida")
 
     def __str__(self):
         return f"Presencia de {self.participante.correo.nombre} desde {self.fecha_entrada} hasta {self.fecha_salida}"
@@ -132,15 +133,15 @@ class Presencia(models.Model):
 class TipoPase(models.Model):
     id_tipo_pase = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, unique=True)
-    fecha_inicio_validez = models.DateTimeField()
+    inicio_validez = models.DateTimeField()
 
     class Meta:
         verbose_name = "Tipo de Pase"
         verbose_name_plural = "Tipos de Pase"
-        ordering = ["fecha_inicio_validez"]
+        ordering = ["inicio_validez"]
 
     def __str__(self):
-        return f"{self.nombre} (Desde {self.fecha_inicio_validez})"
+        return f"{self.nombre} (Desde {self.inicio_validez})"
 
 
 class Pase(models.Model):
