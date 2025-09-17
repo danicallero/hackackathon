@@ -1,31 +1,11 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-GENEROS = (
-    ("HOMBRE", "Hombre"),
-    ("MUJER", "Mujer"),
-    ("OTRO", "Otro"),
-)
-
-TALLAS_CAMISETA = (
-    ("S", "Pequeña"),
-    ("M", "Mediana"),
-    ("L", "Grande"),
-    ("XL", "Extra Grande"),
-    ("XXL", "Extra Extra Grande"),
-)
-
-TIPO_PERSONA = (
-    ("PATROCINADOR", "Patrocinador"),
-    ("PARTICIPANTE", "Participante"),
-    ("MENTOR", "Mentor"),
-)
-
-NIVEL_ESTUDIOS = (
-    ("FORMACION_PROFESIONAL", "Formación Profesional"),
-    ("UNIVERSIDAD", "Universidad"),
-    ("MASTER", "Máster"),
-    ("OTRO", "Otro"),
+from hackudc.constantes import (
+    GENEROS,
+    NIVELES_ESTUDIO,
+    TALLAS_CAMISETA,
+    RESTRICCIONES_ALIMENTARIAS,
 )
 
 
@@ -34,18 +14,7 @@ class Persona(models.Model):
     correo = models.EmailField(max_length=254, unique=True, primary_key=True)
     nombre = models.CharField(max_length=100)
     dni = models.CharField(max_length=9, unique=True, null=True, blank=True)
-    tipo = models.CharField(
-        max_length=50,
-        choices=TIPO_PERSONA,
-        default="PARTICIPANTE",
-    )
-    genero = models.CharField(
-        max_length=10,
-        choices=GENEROS,
-        null=True,
-        blank=True,
-        help_text="Género de la persona.",
-    )
+    genero = models.CharField(max_length=10, choices=GENEROS, null=True, blank=True)
     notas = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(unique=True, null=True, blank=True, default=None)
     aceptado = models.BooleanField(default=False)
@@ -57,23 +26,8 @@ class Persona(models.Model):
         db_table="persona_restriccion_alimentaria",
     )
 
-    class Meta:
-        verbose_name = "Persona"
-        verbose_name_plural = "Personas"
-        ordering = ["nombre"]
 
-        indexes = [
-            models.Index(fields=["uuid"]),
-        ]
-
-    def __str__(self):
-        return f"{self.tipo}: {self.nombre} ({self.correo})"
-
-
-class Patrocinador(models.Model):
-    correo = models.OneToOneField(
-        Persona, on_delete=models.CASCADE, primary_key=True, related_name="patrocinador"
-    )
+class Patrocinador(Persona):
     empresa = models.CharField(max_length=100)
 
     class Meta:
@@ -81,13 +35,10 @@ class Patrocinador(models.Model):
         verbose_name_plural = "Patrocinadores"
 
     def __str__(self):
-        return f"PATROCINADOR: {self.correo.nombre} ({self.correo.correo}) - {self.empresa}"
+        return f"PATROCINADOR: {self.nombre} - {self.empresa}"
 
 
-class Mentor(models.Model):
-    correo = models.OneToOneField(
-        Persona, on_delete=models.CASCADE, primary_key=True, related_name="mentor"
-    )
+class Mentor(Persona):
     tamano_camiseta = models.CharField(
         max_length=10, choices=TALLAS_CAMISETA, null=True, blank=True
     )
@@ -98,13 +49,10 @@ class Mentor(models.Model):
         verbose_name_plural = "Mentores"
 
     def __str__(self):
-        return f"MENTOR: {self.correo.nombre} ({self.correo.correo})"
+        return f"MENTOR: {self.nombre}"
 
 
-class Participante(models.Model):
-    correo = models.OneToOneField(
-        Persona, on_delete=models.CASCADE, primary_key=True, related_name="participante"
-    )
+class Participante(Persona):
     telefono = models.CharField(max_length=16, null=True, blank=True)
     ano_nacimiento = models.PositiveIntegerField(
         null=True,
@@ -115,18 +63,14 @@ class Participante(models.Model):
         ],
     )
     nivel_estudio = models.CharField(
-        null=True,
-        blank=True,
-        max_length=128,
-        choices=NIVEL_ESTUDIOS,
-        help_text="Nivel de estudios en curso.",
+        null=True, blank=True, max_length=128, choices=NIVELES_ESTUDIO
     )
     nombre_estudio = models.CharField(max_length=128, null=True, blank=True)
-    centro_estudios = models.CharField(max_length=128, null=True, blank=True)
+    centro_estudio = models.CharField(max_length=128, null=True, blank=True)
     curso = models.CharField(max_length=128, null=True, blank=True)
     ciudad = models.CharField(max_length=128, null=True, blank=True)
     quiere_creditos = models.BooleanField(default=False)
-    tamano_camiseta = models.CharField(
+    talla_camiseta = models.CharField(
         max_length=10, choices=TALLAS_CAMISETA, null=True, blank=True
     )
     motivacion = models.TextField(null=True, blank=True)
@@ -137,12 +81,14 @@ class Participante(models.Model):
         verbose_name_plural = "Participantes"
 
     def __str__(self):
-        return f"PARTICIPANTE: {self.correo.nombre} ({self.correo.correo}) ({'No aceptado' if not self.correo.aceptado else 'Aceptado'})"
+        return f"PARTICIPANTE: {self.nombre} ({'No aceptado' if not self.aceptado else 'Aceptado'})"
 
 
 class RestriccionAlimentaria(models.Model):
     id_restriccion = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100, unique=True)
+    nombre = models.CharField(
+        max_length=100, unique=True, choices=RESTRICCIONES_ALIMENTARIAS
+    )
 
     class Meta:
         verbose_name = "Restricción Alimentaria"
