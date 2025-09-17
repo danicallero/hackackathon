@@ -127,7 +127,7 @@ class Presencia(models.Model):
         unique_together = ("participante", "entrada", "salida")
 
     def __str__(self):
-        return f"Presencia de {self.participante.correo.nombre} desde {self.fecha_entrada} hasta {self.fecha_salida}"
+        return f"Presencia de {self.participante.nombre} desde {self.entrada} hasta {self.salida}"
 
 
 class TipoPase(models.Model):
@@ -162,4 +162,4 @@ class Pase(models.Model):
         unique_together = ("participante", "tipo_pase", "fecha")
 
     def __str__(self):
-        return f"Pase '{self.tipo_pase}' de {self.participante.correo.nombre} - {self.tipo_pase.nombre} ({self.fecha})"
+        return f"Pase '{self.tipo_pase}' de {self.participante.nombre} - {self.tipo_pase.nombre} ({self.fecha})"
