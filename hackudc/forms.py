@@ -1,6 +1,5 @@
 from django import forms
 
-# from hackudc.constantes import GENEROS, NIVELES_ESTUDIO, TALLAS_CAMISETA
 from hackudc.models import Participante, RestriccionAlimentaria
 
 
@@ -49,10 +48,7 @@ class ParticipanteForm(forms.ModelForm):
         }
 
         widgets = {
-            # "genero": forms.Select(choices=GENEROS),
             "restricciones_alimentarias": forms.CheckboxSelectMultiple(),
-            # "nivel_estudio": forms.Select(choices=NIVELES_ESTUDIO),
-            # "talla_camiseta": forms.Select(choices=TALLAS_CAMISETA),
         }
 
     def __init__(self, *args, **kwargs):
