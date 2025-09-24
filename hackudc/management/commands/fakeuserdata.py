@@ -15,7 +15,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        print(f"Se crearán {options['cantidad']} participantes")
         self.stdout.write(
             self.style.SUCCESS(f"Se crearán {options['cantidad']} participantes")
         )
