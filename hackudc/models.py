@@ -135,8 +135,8 @@ class RestriccionAlimentaria(models.Model):
 
 class Presencia(models.Model):
     id_presencia = models.AutoField(primary_key=True)
-    participante = models.ForeignKey(
-        Participante, on_delete=models.CASCADE, related_name="tiempo_acceso"
+    persona = models.ForeignKey(
+        Persona, on_delete=models.CASCADE, related_name="tiempo_acceso"
     )
     entrada = models.DateTimeField()
     salida = models.DateTimeField(null=True, blank=True, default=None)
@@ -145,10 +145,10 @@ class Presencia(models.Model):
         verbose_name = "Presencia"
         verbose_name_plural = "Presencias"
 
-        unique_together = ("participante", "entrada", "salida")
+        unique_together = ("persona", "entrada", "salida")
 
     def __str__(self):
-        return f"Presencia de {self.participante.nombre} desde {self.entrada} hasta {self.salida}"
+        return f"Presencia de {self.persona.nombre} desde {self.entrada} hasta {self.salida}"
 
 
 class TipoPase(models.Model):
@@ -167,9 +167,7 @@ class TipoPase(models.Model):
 
 class Pase(models.Model):
     id_pase = models.AutoField(primary_key=True)
-    participante = models.ForeignKey(
-        Participante, on_delete=models.CASCADE, related_name="pases"
-    )
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE, related_name="pases")
     tipo_pase = models.ForeignKey(
         TipoPase, on_delete=models.CASCADE, related_name="pases"
     )
@@ -180,7 +178,7 @@ class Pase(models.Model):
         verbose_name_plural = "Pases"
         ordering = ["fecha"]
 
-        unique_together = ("participante", "tipo_pase", "fecha")
+        unique_together = ("persona", "tipo_pase", "fecha")
 
     def __str__(self):
-        return f"Pase '{self.tipo_pase}' de {self.participante.nombre} - {self.tipo_pase.nombre} ({self.fecha})"
+        return f"Pase '{self.tipo_pase}' de {self.persona.nombre} - {self.tipo_pase.nombre} ({self.fecha})"
