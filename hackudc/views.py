@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_not_required
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
-from hackudc.forms import ParticipanteForm, Registro, PaseForm, PresenciaForm
-from hackudc.models import Mentor, Participante, Pase, Persona, Presencia, TipoPase
+from hackudc.forms import ParticipanteForm, PaseForm, PresenciaForm, Registro
+from hackudc.models import Pase, Persona, Presencia, TipoPase
 
 
 @login_not_required
