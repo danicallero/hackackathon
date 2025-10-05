@@ -152,3 +152,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Login
 LOGIN_URL = "/login"
+
+# Messages
+# https://docs.djangoproject.com/en/5.1/ref/contrib/messages/
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+# MESSAGE_TAGS = {
+#     messages.DEBUG: "debug",
+#     messages.INFO: "info",
+#     messages.SUCCESS: "success",
+#     messages.WARNING: "warning",
+#     messages.ERROR: "error",
+# }
