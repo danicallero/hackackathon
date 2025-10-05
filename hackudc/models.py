@@ -64,7 +64,7 @@ class Patrocinador(Persona):
         verbose_name_plural = "Patrocinadores"
 
     def __str__(self):
-        return f"PATROCINADOR: {self.nombre} - {self.empresa}"
+        return f"{self.nombre} - {self.empresa}"
 
 
 class Mentor(Persona):
@@ -79,7 +79,7 @@ class Mentor(Persona):
         verbose_name_plural = "Mentores"
 
     def __str__(self):
-        return f"MENTOR: {self.nombre}"
+        return f"{self.nombre}"
 
 
 class Participante(Persona):
@@ -117,7 +117,7 @@ class Participante(Persona):
         verbose_name_plural = "Participantes"
 
     def __str__(self):
-        return f"PARTICIPANTE: {self.nombre} ({'No aceptado' if not self.aceptado else 'Aceptado'})"
+        return f"{self.nombre} ({'No aceptado' if not self.aceptado else 'Aceptado'})"
 
 
 class RestriccionAlimentaria(models.Model):
