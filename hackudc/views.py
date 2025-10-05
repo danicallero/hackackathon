@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
@@ -86,22 +87,14 @@ def alta(request: HttpRequest):
 def pases(request: HttpRequest):
     """Pases del evento. Registra un pase y muestra si es la primera vez que ese participante utiliza ese pase"""
 
-    mensaje = None
-
     if not (TipoPase.objects.filter(inicio_validez__lte=datetime.now()).exists()):
-        mensaje = "No hay pases disponibles"
-        return render(
-            request,
-            "gestion/pases.html",
-            {"form": PaseForm(), "mensaje": mensaje},
+        messages.error(
+            request, "No hay pases disponibles. Crea uno en el panel de administración."
         )
+        return render(request, "gestion/pases.html", {"form": PaseForm()})
 
     if request.method == "GET":
-        return render(
-            request,
-            "gestion/pases.html",
-            {"form": PaseForm(), "mensaje": mensaje},
-        )
+        return render(request, "gestion/pases.html", {"form": PaseForm()})
 
     form = PaseForm(request.POST)
 
@@ -109,14 +102,16 @@ def pases(request: HttpRequest):
         datos = form.cleaned_data
         participante = Participante.objects.filter(uuid=datos["acreditacion"]).first()
 
-        if not participante:
-            mensaje = "No existe la acreditación"
-        else:
+        if participante:
             pase = Pase(participante=participante, tipo_pase=datos["tipo_pase"])
             pase.save()
-            mensaje = "Pase creado"
+            messages.success(request, f"Pase creado")
+        else:
+            messages.error(request, "No existe la acreditación")
     else:
-        return HttpResponse("Error")
+        messages.error(request, "Datos incorrectos")
+
+    return redirect("pases")
 
 
 @require_http_methods(["GET", "POST"])
