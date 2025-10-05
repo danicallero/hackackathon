@@ -1,4 +1,9 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from django.core.validators import (
+    FileExtensionValidator,
+    MaxValueValidator,
+    MinValueValidator,
+)
 from django.db import models
 
 GENEROS = (
@@ -25,6 +30,11 @@ NIVELES_ESTUDIO = (
 
 def ruta_cv(instance, filename):
     return f"cv/{instance.dni}_{instance.correo.replace("@", "-").replace(".", "-")}_pendiente.pdf"
+
+
+def validador_pdf(value):
+    if value.file.content_type != "application/pdf":
+        raise ValidationError("Error message")
 
 
 # Create your models here.
@@ -94,7 +104,11 @@ class Participante(Persona):
         max_length=10, choices=TALLAS_CAMISETA, null=True, blank=True
     )
     motivacion = models.TextField(null=True, blank=True)
-    cv = models.FileField(upload_to=ruta_cv, null=True)
+    cv = models.FileField(
+        upload_to=ruta_cv,
+        null=True,
+        validators=[FileExtensionValidator(["pdf"]), validador_pdf],
+    )
     compartir_cv = models.BooleanField(default=False)
     aceptado = models.BooleanField(default=False)
 

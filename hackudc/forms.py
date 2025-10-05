@@ -54,6 +54,7 @@ class ParticipanteForm(forms.ModelForm):
 
         widgets = {
             "restricciones_alimentarias": forms.CheckboxSelectMultiple(),
+            "cv": forms.ClearableFileInput(attrs={"accept": ".pdf"}),
         }
 
     def __init__(self, *args, **kwargs):
