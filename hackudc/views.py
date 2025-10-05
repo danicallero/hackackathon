@@ -78,6 +78,10 @@ def alta(request: HttpRequest):
         )
         return redirect("alta")
 
+    else:
+        messages.error(request, "Datos incorrectos")
+        return redirect("alta")
+
 
 @require_http_methods(["GET", "POST"])
 def pases(request: HttpRequest):
