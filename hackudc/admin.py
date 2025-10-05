@@ -1,10 +1,35 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.utils.translation import ngettext
 
 from hackudc.models import *
 
 
 def aceptar_participante(modeladmin, request, queryset):
-    queryset.update(aceptado=True)
+    ya_aceptados = sum(1 for _ in queryset.filter(aceptado=True))
+    actualizados = queryset.update(aceptado=True) - ya_aceptados
+
+    if ya_aceptados:
+        modeladmin.message_user(
+            request,
+            ngettext(
+                "%d participante ya estaba aceptado.",
+                "%d participantes ya estaban aceptados.",
+                ya_aceptados,
+            )
+            % ya_aceptados,
+            messages.WARNING,
+        )
+    if actualizados:
+        modeladmin.message_user(
+            request,
+            ngettext(
+                "%d participante aceptado.", "%d participantes aceptados.", actualizados
+            )
+            % actualizados,
+            messages.SUCCESS,
+        )
+    else:
+        modeladmin.message_user(request, "No se ha aceptado a ningún participante.")
 
 
 class ParticipanteAdmin(admin.ModelAdmin):
