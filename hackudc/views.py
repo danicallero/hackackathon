@@ -4,13 +4,13 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_not_required
 
 from hackudc.forms import ParticipanteForm, Registro, PaseForm, PresenciaForm
 from hackudc.models import Participante, Pase, Presencia, TipoPase
 
 
-# Create your views here.
+@login_not_required
 @require_http_methods(["GET", "POST"])
 def registro(request: HttpRequest):
     if request.method == "GET":
@@ -30,7 +30,6 @@ def gestion(request: HttpRequest):
 
 
 @csrf_exempt  # Revisar. ¿Por qué no funciona el csrf en hackudc.local.delthia.com?
-@login_required
 @require_http_methods(["GET", "POST"])
 def alta(request: HttpRequest):
     """Check-in del evento. Asocia un participante a una acreditación
@@ -83,7 +82,6 @@ def alta(request: HttpRequest):
     return render(request, "gestion/registro.html", {"form": form})
 
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def pases(request: HttpRequest):
     """Pases del evento. Registra un pase y muestra si es la primera vez si ese participante utiliza ese pase"""
@@ -123,7 +121,6 @@ def pases(request: HttpRequest):
     )
 
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def presencia(request: HttpRequest):
     mensaje = None
