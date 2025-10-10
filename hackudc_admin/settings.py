@@ -25,6 +25,10 @@ ALLOWED_HOSTS = []
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
 
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://admin.hackudc.gpul.org",
+# ]
+
 # Application definition
 
 INSTALLED_APPS = [

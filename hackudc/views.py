@@ -29,7 +29,6 @@ def gestion(request: HttpRequest):
     return render(request, "gestion/index.html")
 
 
-@csrf_exempt  # Revisar. ¿Por qué no funciona el csrf en hackudc.local.delthia.com?
 @require_http_methods(["GET", "POST"])
 def alta(request: HttpRequest):
     """Check-in del evento. Asocia un participante a una acreditación
