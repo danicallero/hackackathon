@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from hackudc.forms import ParticipanteForm, PaseForm, PresenciaForm, Registro
+from hackudc.forms import ParticipanteForm, PaseForm, Registro
 from hackudc.models import Pase, Persona, Presencia, TipoPase
 
 
@@ -113,48 +113,84 @@ def pases(request: HttpRequest):
     return redirect("pases")
 
 
-@require_http_methods(["GET", "POST"])
-def presencia(request: HttpRequest):
-    mensaje = None
+@require_http_methods(["GET"])
+def presencia(request: HttpRequest, acreditacion: str = ""):
+    if not acreditacion:
+        return render(request, "gestion/presencia.html")
 
-    if request.method == "POST":
-        form = PresenciaForm(request.POST)
+    persona = Persona.objects.filter(acreditacion=acreditacion).first()
 
-        if form.is_valid():
-            datos = form.cleaned_data
-            persona = Persona.objects.filter(acreditacion=datos["acreditacion"]).first()
+    if not persona:
+        messages.error(request, "No existe la acreditación")
+        return redirect("presencia")
 
-            if not persona:
-                mensaje = "No existe la acreditación"
+    presencias = Presencia.objects.filter(persona=persona).order_by("-entrada")
 
-            presencias = Presencia.objects.filter(persona=persona)
-            ultima = presencias.order_by("entrada").last()
+    tiempo_total = timedelta()
+    for presencia in presencias:
+        if presencia.entrada and presencia.salida:
+            tiempo_total += presencia.salida - presencia.entrada
 
-            # Acciones
-            match datos["accion"]:
-                case "v":
-                    ultima = presencias.order_by("entrada").last()
-                    return HttpResponse(f"{ultima.entrada} - {ultima.salida}")
-                case "e":
-                    # Comprobar que salió
-                    if not ultima.salida:
-                        return HttpResponse("No salió")
+    tiempo_total = str(tiempo_total).split(".")[0]  # Remove microseconds
 
-                    # Guardar entrada
-                    entrada = Presencia(persona=persona, entrada=datetime.now())
-                    entrada.save()
-                    return HttpResponse("OK")
-
-                case "s":
-                    # Comprobar que entró
-                    if ultima.salida:
-                        return HttResponse("No entró")
-
-                    # Guardar salida
-                    ultima.salida = datetime.now()
-                    ultima.save()
-                    return HttpResponse("OK")
+    if not presencias.exists():
+        messages.warning(request, "No hay presencias registradas")
 
     return render(
-        request, "gestion/presencia.html", {"form": PresenciaForm, "mensaje": mensaje}
+        request,
+        "gestion/presencia.html",
+        {
+            "persona": persona,
+            "presencias": presencias,
+            "tiempo_total": tiempo_total,
+        },
     )
+
+
+@require_http_methods(["GET"])
+def presencia_entrada(request: HttpRequest, acreditacion: str):
+    persona = Persona.objects.filter(acreditacion=acreditacion).first()
+    if not persona:
+        messages.error(request, "No existe la acreditación")
+        return redirect("presencia")
+
+    presencias = Presencia.objects.filter(persona=persona)
+    ultima = presencias.order_by("-entrada").first()
+
+    if not ultima:
+        messages.error(request, "No había ninguna entrada")
+    elif not ultima.salida:
+        messages.warning(request, "No hay salida registrada de la última presencia")
+
+    # Guardar entrada
+    entrada = Presencia(persona=persona, entrada=datetime.now())
+    entrada.save()
+
+    return redirect("presencia")
+
+
+@require_http_methods(["GET"])
+def presencia_salida(request: HttpRequest, acreditacion: str):
+    persona = Persona.objects.filter(acreditacion=acreditacion).first()
+    if not persona:
+        messages.error(request, "No existe la acreditación")
+        return redirect("presencia")
+
+    presencias = Presencia.objects.filter(persona=persona)
+    ultima = presencias.order_by("-entrada").first()
+
+    if not ultima:
+        messages.error(request, "No había ninguna entrada")
+
+        ultima = Presencia(persona=persona, entrada=datetime.now())
+
+    if ultima.salida:
+        messages.warning(request, "La última presencia ya tiene salida registrada")
+
+        ultima = Presencia(persona=persona, entrada=datetime.now())
+
+    # Guardar salida
+    ultima.salida = datetime.now()
+    ultima.save()
+
+    return redirect("presencia")

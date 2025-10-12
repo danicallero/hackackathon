@@ -5,14 +5,39 @@
 {% block content %}
 <div id="gestion-presencia">
     <h1>Presencia</h1>
-    {% if mensaje %}
-    <p style="color: red; font-weight: bold;">{{ mensaje }}</p>
-    {% endif %}
 
-    <form action="{% url 'presencia' %}" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
+    {% if not persona %}
+    <input type="text" id="id_acreditacion" name="acreditacion">
+    <a onclick="window.location.replace('{% url 'presencia' %}/' + document.getElementById('id_acreditacion').value)"
+        href="#">
+        Buscar
+    </a>
+
+    {% else %}
+    <h2>{{ persona.nombre }} ({{ persona.acreditacion }})</h2>
+    <p>Tiempo total: {{ tiempo_total }}</p>
+    <br>
+    <a href="{% url 'presencia' %}">Nueva búsqueda</a>
+    <br>
+    <a href="{% url 'presencia-entrada' acreditacion=persona.acreditacion %}">Entrada</a>
+    <a href="{% url 'presencia-salida' acreditacion=persona.acreditacion %}">Salida</a>
+    <h3>Historial</h3>
+    <ul>
+        {% for presencia in presencias %}
+        <li>
+            {{ presencia.entrada|date:'d M Y \a \l\a\s H:i' }} -
+
+            {% if presencia.salida %}
+            {{ presencia.salida|date:'d M Y \a \l\a\s H:i' }} ({{ presencia.salida|timeuntil:presencia.entrada }})
+            {% else %}
+            <strong>Sin salida</strong>
+            {% endif %}
+        </li>
+        {% empty %}
+        <li>No hay registros de presencia.</li>
+        {% endfor %}
+    </ul>
+
+    {% endif %}
 </div>
 {% endblock content %}

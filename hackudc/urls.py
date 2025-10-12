@@ -15,4 +15,15 @@ urlpatterns = [
     path("gestion/registro", views.alta, name="alta"),
     path("gestion/pases", views.pases, name="pases"),
     path("gestion/presencia", views.presencia, name="presencia"),
+    path("gestion/presencia/<acreditacion>", views.presencia, name="presencia"),
+    path(
+        "gestion/presencia/<acreditacion>/entrada",
+        views.presencia_entrada,
+        name="presencia-entrada",
+    ),
+    path(
+        "gestion/presencia/<acreditacion>/salida",
+        views.presencia_salida,
+        name="presencia-salida",
+    ),
 ]

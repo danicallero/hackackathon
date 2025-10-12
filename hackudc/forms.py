@@ -86,10 +86,3 @@ class PaseForm(forms.Form):
             .order_by("-inicio_validez")
             .first()
         )
-
-
-class PresenciaForm(forms.Form):
-    accion = forms.ChoiceField(
-        choices=(("v", "Ver"), ("e", "Entrada"), ("s", "Salida"))
-    )
-    acreditacion = forms.CharField(label="Acreditación a asignar", max_length=6)
