@@ -50,6 +50,7 @@ class ParticipanteForm(forms.ModelForm):
         help_texts = {
             "cv": "Currículum vitae en formato PDF. Lo usaremos para conocerte mejor y lo haremos llegar a nuestros patrocinadores si lo deseas.",
             "notas": "Otros datos que consideres relevantes (alergias, etc.).",
+            "quiere_creditos": "Para estudiantes de la UDC",
         }
 
         widgets = {
