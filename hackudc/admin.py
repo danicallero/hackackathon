@@ -48,27 +48,31 @@ class EstadoParticipanteListFilter(admin.SimpleListFilter):
         match self.value():
             case "registrado":
                 return queryset.filter(
-                    fecha_verificacion_correo=None,
-                    fecha_aceptacion=None,
-                    fecha_confirmacion_plaza=None,
+                    fecha_registro__isnull=False,
+                    fecha_verificacion_correo__isnull=True,
+                    fecha_aceptacion__isnull=True,
+                    fecha_confirmacion_plaza__isnull=True,
                 )
             case "verificado":
                 return queryset.filter(
-                    fecha_aceptacion=None,
-                    fecha_confirmacion_plaza=None,
-                ).exclude(fecha_verificacion_correo=None)
+                    fecha_registro__isnull=False,
+                    fecha_verificacion_correo__isnull=False,
+                    fecha_aceptacion__isnull=True,
+                    fecha_confirmacion_plaza__isnull=True,
+                )
             case "aceptado":
                 return queryset.filter(
-                    fecha_confirmacion_plaza=None,
-                ).exclude(
-                    fecha_aceptacion=None,
-                    fecha_verificacion_correo=None,
+                    fecha_registro__isnull=False,
+                    fecha_verificacion_correo__isnull=False,
+                    fecha_aceptacion__isnull=False,
+                    fecha_confirmacion_plaza__isnull=True,
                 )
             case "confirmado":
-                return queryset.exclude(
-                    fecha_verificacion_correo=None,
-                    fecha_aceptacion=None,
-                    fecha_confirmacion_plaza=None,
+                return queryset.filter(
+                    fecha_registro__isnull=False,
+                    fecha_verificacion_correo__isnull=False,
+                    fecha_aceptacion__isnull=False,
+                    fecha_confirmacion_plaza__isnull=False,
                 )
 
 
