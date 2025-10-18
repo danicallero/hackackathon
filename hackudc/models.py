@@ -28,6 +28,11 @@ NIVELES_ESTUDIO = (
     ("OTRO", "Otro (Especificar en notas)"),
 )
 
+TIPOS_TOKEN = (
+    ("VERIFICACION", "Verificación correo"),
+    ("CONFIRMACION", "Confirmación plaza"),
+)
+
 
 def ruta_cv(instance, filename):
     return f"cv/{instance.dni}_{instance.correo.replace("@", "-").replace(".", "-")}_pendiente.pdf"
@@ -205,3 +210,13 @@ class Pase(models.Model):
 
     def __str__(self):
         return f"Pase '{self.tipo_pase}' de {self.persona.nombre} - {self.tipo_pase.nombre} ({self.fecha})"
+
+
+class Token(models.Model):
+    token = models.UUIDField(primary_key=True)
+    tipo = models.CharField(max_length=50, choices=TIPOS_TOKEN)
+    persona = models.ForeignKey(
+        Persona, on_delete=models.CASCADE, related_name="tokens"
+    )
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    tiempo_validez_minutos = models.PositiveIntegerField()
