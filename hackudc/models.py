@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.core.validators import (
     FileExtensionValidator,
@@ -86,6 +87,22 @@ class Persona(PersonaAbstracta):
     )
     fecha_aceptacion = models.DateTimeField(null=True, blank=True, default=None)
     fecha_confirmacion_plaza = models.DateTimeField(null=True, blank=True, default=None)
+
+    @admin.display(
+        boolean=True, ordering="fecha_verificacion_correo", description="Verificado"
+    )
+    def verificado(self):
+        return self.fecha_verificacion_correo is not None
+
+    @admin.display(boolean=True, ordering="fecha_aceptacion", description="Aceptado")
+    def aceptado(self):
+        return self.fecha_aceptacion is not None
+
+    @admin.display(
+        boolean=True, ordering="fecha_confirmacion_plaza", description="Confirmado"
+    )
+    def confirmado(self):
+        return self.fecha_confirmacion_plaza is not None
 
 
 class Mentor(Persona):

@@ -41,9 +41,9 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "ciudad",
         "quiere_creditos",
         "fecha_registro",
-        "fecha_aceptacion",
-        "fecha_confirmacion_plaza",
-        "fecha_verificacion_correo",
+        "verificado",
+        "aceptado",
+        "confirmado",
     ]
     list_filter = ["fecha_aceptacion", "centro_estudio", "ciudad"]
     actions = [aceptar_participante]
