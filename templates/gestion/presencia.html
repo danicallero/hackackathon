@@ -7,11 +7,10 @@
     <h1>Presencia</h1>
 
     {% if not persona %}
-    <input type="text" id="id_acreditacion" name="acreditacion">
-    <a onclick="window.location.replace('{% url 'presencia' %}/' + document.getElementById('id_acreditacion').value)"
-        href="#">
-        Buscar
-    </a>
+    <form action="{% url 'presencia' %}" method="get">
+        <input type="text" id="acreditacion" name="acreditacion">
+        <button type="submit">Buscar</button>
+    </form>
 
     {% else %}
     <h2>{{ persona.nombre }} ({{ persona.acreditacion }})</h2>

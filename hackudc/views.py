@@ -117,6 +117,9 @@ def pases(request: HttpRequest):
 @require_http_methods(["GET"])
 def presencia(request: HttpRequest, acreditacion: str = ""):
     if not acreditacion:
+        acreditacion = request.GET.get("acreditacion", "")
+
+    if not acreditacion:
         return render(request, "gestion/presencia.html")
 
     persona = Persona.objects.filter(acreditacion=acreditacion).first()
