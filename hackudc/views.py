@@ -1,5 +1,6 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.http import HttpRequest, HttpResponse
@@ -15,6 +16,9 @@ from hackudc.models import Pase, Persona, Presencia, TipoPase
 @login_not_required
 @require_http_methods(["GET", "POST"])
 def registro(request: HttpRequest):
+    if timezone.now() > datetime.fromisoformat(settings.PLAZO_REGISTRO):
+        return render(request, "registro_cerrado.html")
+
     if request.method == "GET":
         return render(request, "registro.html", {"form": ParticipanteForm()})
 

@@ -10,6 +10,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Fin plazo registro
+PLAZO_REGISTRO = "2025-12-31 23:59:59+01:00"
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
 
