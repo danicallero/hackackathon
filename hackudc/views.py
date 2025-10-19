@@ -204,19 +204,11 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
         )
 
     # POST
-    entrada_str = request.POST.get("entrada", "")
-    salida_str = request.POST.get("salida", "")
-
-    try:
-        entrada = datetime.fromisoformat(entrada_str)
-        salida = datetime.fromisoformat(salida_str) if salida_str else None
-
-        presencia.entrada = entrada
-        presencia.salida = salida
-        presencia.save()
-
+    form = EditarPresenciaForm(request.POST, instance=presencia)
+    if form.is_valid():
+        form.save()
         messages.success(request, "Presencia actualizada")
-    except ValueError:
-        messages.error(request, "Formato de fecha/hora incorrecto")
+    else:
+        messages.error(request, "Datos incorrectos")
 
     return redirect("presencia", acreditacion=presencia.persona.acreditacion)
