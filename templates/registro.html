@@ -1,6 +1,21 @@
-<form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% extends "marco.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div id="registro">
+    <h1>Registro de participantes</h1>
+
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="/gestion">Gestión</a>
     <hr>
-    <button type="submit">Enviar</button>
-</form>
+    {% endif %}
+
+    <form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <hr>
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+{% endblock content %}
