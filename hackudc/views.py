@@ -137,12 +137,15 @@ def presencia(request: HttpRequest, acreditacion: str = ""):
     if not presencias.exists():
         messages.warning(request, "No hay presencias registradas")
 
+    presencias_sin_entrada = presencias.filter(entrada__isnull=True).exists()
+
     return render(
         request,
         "gestion/presencia.html",
         {
             "persona": persona,
             "presencias": presencias,
+            "presencias_sin_entrada": presencias_sin_entrada,
             "tiempo_total": tiempo_total,
         },
     )

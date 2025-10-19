@@ -69,11 +69,22 @@ div#footer a {
 
 /* GENERAL */
 
+.lucide {
+    vertical-align: middle;
+    width: 1.25em;
+    height: 1.25em;
+    margin-bottom: 0.25em;
+}
+
 p.warning {
+    padding: 0.5rem 1rem;
+
     border: 2px solid #ff88007f;
     border-radius: 0.5rem;
+
     background-color: #ff88003a;
     color: #eee;
+
     font-weight: bold;
     text-align: center;
 }
@@ -151,8 +162,8 @@ p.warning {
 
 #gestion-presencia div.botones a {
     border: 2px solid #f0f0f0;
-    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
     text-decoration: none;
     color: #f0f0f0;
     transition: background-color 0.3s, color 0.3s;
@@ -165,7 +176,7 @@ p.warning {
 }
 
 #gestion-presencia a {
-    margin-left: 0.5rem;
+    margin-left: 0.125rem;
 
     text-decoration: none;
     color: #f0f0f0;
