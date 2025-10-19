@@ -167,7 +167,7 @@ def presencia_entrada(request: HttpRequest, acreditacion: str):
     entrada = Presencia(persona=persona, entrada=timezone.now())
     entrada.save()
 
-    return redirect("presencia")
+    return redirect("presencia", acreditacion=acreditacion)
 
 
 @require_http_methods(["GET"])
@@ -188,6 +188,8 @@ def presencia_salida(request: HttpRequest, acreditacion: str):
     # Guardar salida
     ultima = Presencia(persona=persona, salida=timezone.now())
     ultima.save()
+
+    return redirect("presencia", acreditacion=acreditacion)
 
 
 @require_http_methods(["GET", "POST"])
