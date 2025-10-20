@@ -1,7 +1,16 @@
 from django.contrib import admin, messages
 from django.utils.translation import ngettext
 
-from hackudc.models import *
+from hackudc.models import (
+    Participante,
+    Mentor,
+    Patrocinador,
+    RestriccionAlimentaria,
+    Presencia,
+    TipoPase,
+    Pase,
+    Token,
+)
 
 
 def aceptar_participante(modeladmin, request, queryset):
@@ -101,3 +110,4 @@ admin.site.register(RestriccionAlimentaria)
 admin.site.register(Presencia)
 admin.site.register(TipoPase)
 admin.site.register(Pase)
+admin.site.register(Token)
