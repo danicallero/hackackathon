@@ -8,20 +8,24 @@ class ParticipanteForm(forms.ModelForm):
     class Meta:
         model = Participante
         fields = [
+            # Datpos personales
             "nombre",
-            "correo",
             "dni",
-            "genero",
-            "restricciones_alimentarias",
+            "correo",
             "telefono",
             "ano_nacimiento",
-            "nivel_estudio",
-            "nombre_estudio",
-            "centro_estudio",
-            "curso",
-            "ciudad",
-            "quiere_creditos",
+            "genero",
             "talla_camiseta",
+            "ciudad",
+            # Restricciones alimentarias
+            "restricciones_alimentarias",
+            # Estudios
+            "nivel_estudio",
+            "centro_estudio",
+            "nombre_estudio",
+            "curso",
+            # Otros
+            "quiere_creditos",
             "cv",
             "compartir_cv",
             "motivacion",

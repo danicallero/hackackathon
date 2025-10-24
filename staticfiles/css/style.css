@@ -1,3 +1,15 @@
+/* COLORES */
+:root {
+    --amarillo-hackudc: #ffd230;
+    --sombra-hackudc: #7c3f00;
+    --acento-hackudc: #fef3c6;
+    /* grises */
+    --fondo: #101010;
+    --borde: #1a1a1a;
+    --claro: #242424;
+    --texto: #999;
+}
+
 html {
     font-family: Nunito, sans-serif, system-ui;
     font-optical-sizing: auto;
@@ -20,7 +32,13 @@ body {
     min-height: 100vh;
 }
 
+/*div#content {
+    margin: 0 auto;
+    margin-bottom: 2rem;
+}*/
+
 div#content {
+    max-width: min(100% - 1em, 1000px);
     margin: 0 auto;
     margin-bottom: 2rem;
 }
@@ -187,4 +205,125 @@ p.warning {
 
     text-decoration: none;
     color: #f0f0f0;
+}
+
+/* FORMULARIO DE REGISTRO */
+#registro form {
+    border: 2px solid var(--borde);
+    border-radius: 0.5em;
+    padding: 1em;
+
+    background-color: var(--fondo);
+    /* backdrop-filter: blur(16px); */
+}
+
+
+form div {
+    display: flex;
+    flex-direction: column;
+
+    max-width: 50%;
+    width: 45%;
+
+    margin-top: 0.5em;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+/* Restricciones alimentarias */
+div:has(> fieldset),
+div:has(> #id_quiere_creditos),
+div:has(> #id_compartir_cv),
+div:has(> #id_cv),
+div:has(> #id_motivacion),
+div:has(> #id_notas),
+form hr {
+    width: 100%;
+    max-width: 95%;
+
+    margin: 2em 0;
+
+    /* background-color: green; */
+}
+
+form>button {
+    padding: 8px 16px;
+
+    background-color: var(--amarillo-hackudc);
+    border: none;
+    /* border-radius: 0.5em; */
+    border-radius: 1px;
+    box-shadow: 4px 4px 0px var(--sombra-hackudc);
+
+    font-weight: bold;
+    color: var(--sombra-hackudc);
+
+    cursor: pointer;
+
+    transition-duration: 125ms;
+}
+
+form>button:hover {
+    box-shadow: 1px 1px 0px var(--sombra-hackudc);
+    transform: translate(3px, 3px);
+}
+
+fieldset div {
+    width: 100%;
+    max-width: 100%;
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+select,
+textarea {
+    background-color: #181818;
+    border: 2px solid #181818;
+    outline: none;
+    color: var(--texto);
+
+    padding: 8px;
+    border-radius: 4px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=number]:focus,
+select:focus,
+textarea:focus {
+    border: 2px solid var(--acento-hackudc);
+    color: var(--acento-hackudc);
+}
+
+fieldset {
+    border-radius: 8px;
+    border: 2px solid var(--claro);
+    padding: 0.5em 1.5em;
+
+    line-height: 2em;
+    padding-top: 0em;
+}
+
+fieldset>div {
+    margin-top: 0;
+}
+
+#id_quiere_creditos_helptext,
+#id_cv_helptext,
+#id_notas_helptext {
+    font-style: italic;
+    font-size: 80%;
 }
