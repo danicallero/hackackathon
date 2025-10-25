@@ -57,13 +57,13 @@
             {% if presencia.entrada %}
             {{ presencia.entrada|date:'d M Y \a \l\a\s H:i' }}
             {% else %}
-            <strong>Sin entrada</strong>
+            <span class="bold">Sin entrada</span>
             {% endif %}
             - <wbr />
             {% if presencia.salida %}
             {{ presencia.salida|date:'d M Y \a \l\a\s H:i' }} ({{ presencia.salida|timeuntil:presencia.entrada }})
             {% else %}
-            <strong>Sin salida</strong>
+            <span class="bold">Sin salida</span>
             {% endif %}
 
             {% if not presencia.entrada or not presencia.salida %}

@@ -94,6 +94,10 @@ div#footer a {
     margin-bottom: 0.25em;
 }
 
+span.bold {
+    font-weight: bold;
+}
+
 p.warning {
     padding: 0.5rem 1rem;
 
