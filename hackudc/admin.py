@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.utils import timezone
 from django.utils.translation import ngettext
 
 from hackudc.models import (
@@ -14,8 +15,10 @@ from hackudc.models import (
 
 
 def aceptar_participante(modeladmin, request, queryset):
-    ya_aceptados = queryset.filter(aceptado=True).count()
-    actualizados = queryset.filter(aceptado=False).update(aceptado=True)
+    ya_aceptados = queryset.filter(fecha_aceptacion__isnull=False).count()
+    actualizados = queryset.filter(fecha_aceptacion__isnull=True).update(
+        fecha_aceptacion=timezone.now()
+    )
 
     if ya_aceptados:
         modeladmin.message_user(
