@@ -31,4 +31,5 @@ urlpatterns = [
         views.presencia_editar,
         name="presencia-editar",
     ),
+    path("verificar/<token>", views.verificar_correo, name="verificar-correo"),
 ]

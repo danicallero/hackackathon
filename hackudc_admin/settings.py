@@ -151,3 +151,10 @@ LOGIN_URL = "/login"
 # Messages
 # https://docs.djangoproject.com/en/5.1/ref/contrib/messages/
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+
+# Email
+# https://docs.djangoproject.com/en/5.1/topics/email/
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 8025
+
+DEFAULT_FROM_EMAIL = ("no-reply@gpul.org",)

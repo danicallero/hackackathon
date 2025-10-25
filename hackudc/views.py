@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
+from django.core.mail import EmailMessage
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -10,7 +11,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 from hackudc.forms import EditarPresenciaForm, ParticipanteForm, PaseForm, Registro
-from hackudc.models import Pase, Persona, Presencia, TipoPase
+from hackudc.models import Participante, Pase, Persona, Presencia, TipoPase, Token
+
+EMAIL_VERIFICACION_ASUNTO = "HackUDC 2026 - Confirma tu correo ✉️"
+EMAIL_VERIFICACION_CUERPO = """\
+Hola {nombre}. Tu token de inicio de sesión es: {token}.
+
+Puedes verificar tu correo haciendo clic en el siguiente enlace: https://{host}/verificar/{token}
+"""
 
 
 @login_not_required
@@ -24,10 +32,39 @@ def registro(request: HttpRequest):
 
     form = ParticipanteForm(request.POST, request.FILES)
     if form.is_valid():
-        form.save()
-        return HttpResponse("OK")
-    else:
-        return render(request, "registro.html", {"form": form})
+        participante: Participante = form.save()
+        token = Token(
+            tipo="VERIFICACION",
+            persona=participante,
+            tiempo_validez_minutos=7 * 24 * 60,  # 7 días
+        )
+        token.save()
+        try:
+            email = EmailMessage(
+                EMAIL_VERIFICACION_ASUNTO,
+                EMAIL_VERIFICACION_CUERPO.format(
+                    nombre=participante.nombre,
+                    token=token.token,
+                    host=request.get_host(),
+                ),
+                to=(participante.correo,),
+                reply_to=("info@gpul.org",),
+                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
+            )
+            email.send(fail_silently=False)
+        except ConnectionRefusedError:
+            exit(1)
+            messages.error(
+                request,
+                "Error al mandar el correo. Inténtalo más tarde o contacta con nosotros a través de hackudc@gpul.org",
+            )
+            return redirect("registro")
+
+        messages.success(
+            request, "Registro completado. Revisa tu correo para verificarte!"
+        )
+
+    return redirect("registro")
 
 
 def gestion(request: HttpRequest):
@@ -227,3 +264,30 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
         messages.error(request, "Datos incorrectos")
 
     return redirect("presencia", acreditacion=presencia.persona.acreditacion)
+
+
+@login_not_required
+@require_http_methods(["GET"])
+def verificar_correo(request: HttpRequest, token: str):
+    token_obj = Token.objects.filter(token=token, tipo="VERIFICACION").first()
+    if not token_obj:
+        messages.error(request, "Token inválido")
+        return redirect("registro")
+
+    if not token_obj.valido():
+        messages.error(
+            request,
+            "El token de verificación ha expirado. Ponte en contacto con nosotros para verificar tu correo manualmente.",
+        )
+        return redirect("registro")
+
+    participante: Participante = Participante.objects.get(
+        correo=token_obj.persona.correo
+    )
+    participante.fecha_verificacion_correo = timezone.now()
+    participante.save()
+
+    # token_obj.delete()
+
+    messages.success(request, "Correo verificado correctamente")
+    return redirect("registro")
