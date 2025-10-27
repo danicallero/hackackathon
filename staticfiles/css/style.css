@@ -321,6 +321,12 @@ form>button:hover {
     transform: translate(3px, 3px);
 }
 
+form label:has(~ input:required):after,
+form label:has(~ select:required):after {
+    content: ' *';
+    color: red;
+}
+
 fieldset div {
     width: 100%;
     max-width: 100%;
