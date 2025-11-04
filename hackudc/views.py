@@ -53,18 +53,19 @@ def registro(request: HttpRequest):
             )
             email.send(fail_silently=False)
         except ConnectionRefusedError:
-            exit(1)
             messages.error(
                 request,
                 "Error al mandar el correo. Inténtalo más tarde o contacta con nosotros a través de hackudc@gpul.org",
             )
-            return redirect("registro")
+            return render(request, "registro.html", {"form": form})
 
         messages.success(
             request, "Registro completado. Revisa tu correo para verificarte!"
         )
+        return redirect("registro")
 
-    return redirect("registro")
+    messages.error(request, "Datos incorrectos")
+    return render(request, "registro.html", {"form": form})
 
 
 def gestion(request: HttpRequest):
@@ -119,9 +120,8 @@ def alta(request: HttpRequest):
         )
         return redirect("alta")
 
-    else:
-        messages.error(request, "Datos incorrectos")
-        return redirect("alta")
+    messages.error(request, "Datos incorrectos")
+    return render(request, "gestion/registro.html", {"form": form})
 
 
 @require_http_methods(["GET", "POST"])
@@ -147,12 +147,13 @@ def pases(request: HttpRequest):
             pase = Pase(persona=persona, tipo_pase=datos["tipo_pase"])
             pase.save()
             messages.success(request, f"Pase creado")
-        else:
-            messages.error(request, "No existe la acreditación")
-    else:
-        messages.error(request, "Datos incorrectos")
+            return redirect("pases")
 
-    return redirect("pases")
+        messages.error(request, "No existe la acreditación")
+        return render(request, "gestion/pases.html", {"form": PaseForm()})
+
+    messages.error(request, "Datos incorrectos")
+    return render(request, "gestion/pases.html", {"form": form})
 
 
 @require_http_methods(["GET"])
@@ -260,10 +261,14 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
     if form.is_valid():
         form.save()
         messages.success(request, "Presencia actualizada")
-    else:
-        messages.error(request, "Datos incorrectos")
+        return redirect("presencia", acreditacion=presencia.persona.acreditacion)
 
-    return redirect("presencia", acreditacion=presencia.persona.acreditacion)
+    messages.error(request, "Datos incorrectos")
+    return render(
+        request,
+        "gestion/editar_presencia.html",
+        {"presencia": presencia, "form": form},
+    )
 
 
 @login_not_required
@@ -279,6 +284,7 @@ def verificar_correo(request: HttpRequest, token: str):
             request,
             "El token de verificación ha expirado. Ponte en contacto con nosotros para verificar tu correo manualmente.",
         )
+        #!!! Permitimos que el usuario solicite un nuevo token aquí?
         return redirect("registro")
 
     participante: Participante = Participante.objects.get(
