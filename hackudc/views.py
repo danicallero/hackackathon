@@ -36,7 +36,7 @@ def registro(request: HttpRequest):
         token = Token(
             tipo="VERIFICACION",
             persona=participante,
-            tiempo_validez_minutos=7 * 24 * 60,  # 7 días
+            fecha_expiracion=timezone.now() + timedelta(days=7),
         )
         token.save()
         try:
@@ -287,13 +287,15 @@ def verificar_correo(request: HttpRequest, token: str):
         #!!! Permitimos que el usuario solicite un nuevo token aquí?
         return redirect("registro")
 
+    ahora = timezone.now()
+
     participante: Participante = Participante.objects.get(
         correo=token_obj.persona.correo
     )
-    participante.fecha_verificacion_correo = timezone.now()
+    participante.fecha_verificacion_correo = ahora
     participante.save()
 
-    # token_obj.delete()
+    token_obj.fecha_uso = ahora
 
     messages.success(request, "Correo verificado correctamente")
     return redirect("registro")

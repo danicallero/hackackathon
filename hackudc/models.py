@@ -111,6 +111,9 @@ class Persona(PersonaAbstracta):
     def confirmado(self):
         return self.fecha_confirmacion_plaza is not None
 
+    def __str__(self):
+        return f"{self.nombre} ({self.correo})"
+
 
 class Mentor(Persona):
 
@@ -218,10 +221,16 @@ class Token(models.Model):
         Persona, on_delete=models.CASCADE, related_name="tokens"
     )
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    tiempo_validez_minutos = models.PositiveIntegerField()
+    fecha_expiracion = models.DateTimeField(null=False)
+    fecha_uso = models.DateTimeField(null=True, blank=True, default=None)
+
+    @admin.display(boolean=True, ordering="fecha_creacion", description="Usado")
+    def usado(self):
+        return self.fecha_uso is not None
 
     @admin.display(boolean=True, ordering="fecha_creacion", description="Válido")
     def valido(self):
-        return (
-            self.fecha_creacion + timedelta(minutes=self.tiempo_validez_minutos)
-        ) > timezone.now()
+        return self.fecha_expiracion > timezone.now() and not self.usado
+
+    def __str__(self):
+        return f"Token de {self.persona.nombre}"
