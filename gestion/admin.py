@@ -1,5 +1,7 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
+import logging
+
 from django.contrib import admin, messages
 from django.utils import timezone
 from django.utils.translation import ngettext
@@ -14,6 +16,8 @@ from gestion.models import (
     TipoPase,
     Token,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @admin.action(permissions=["aceptar"])
@@ -30,6 +34,10 @@ def aceptar_participante(modeladmin, request, queryset):
     ya_aceptados = verificados.filter(fecha_aceptacion__isnull=False).count()
     actualizados = verificados.filter(fecha_aceptacion__isnull=True).update(
         fecha_aceptacion=timezone.now()
+    )
+
+    logger.info(
+        f"Acción 'aceptar_participante' ejecutada por {request.user.username}: {actualizados} aceptados. {no_verificados.count()} no verificados. {ya_aceptados} ya aceptados"
     )
 
     if no_verificados.exists():
