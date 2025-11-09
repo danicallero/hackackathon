@@ -153,6 +153,11 @@ class Participante(Persona):
 
         permissions = [
             ("aceptar_participante", "Aceptar Participante"),
+            ("ver_cv_participante", "Ver el CV de Participante"),
+            (
+                "ver_dni_telefono_participante",
+                "Ver el DNI y el teléfono de Participante",
+            ),
         ]
 
     def __str__(self):

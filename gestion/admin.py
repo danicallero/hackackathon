@@ -131,6 +131,61 @@ class TokenValidoListFilter(admin.SimpleListFilter):
 
 
 class ParticipanteAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (
+            "Personal",
+            {
+                "fields": [
+                    "nombre",
+                    "correo",
+                    "genero",
+                    "ano_nacimiento",
+                    "ciudad",
+                    "telefono",
+                    "dni",
+                    "cv",
+                    "compartir_cv",
+                ]
+            },
+        ),
+        (
+            "Estudios",
+            {
+                "fields": [
+                    "nivel_estudio",
+                    "nombre_estudio",
+                    "centro_estudio",
+                    "curso",
+                    "quiere_creditos",
+                ]
+            },
+        ),
+        (
+            "Evento",
+            {
+                "fields": [
+                    "acreditacion",
+                    "restricciones_alimentarias",
+                    "talla_camiseta",
+                    "fecha_registro",
+                    "fecha_verificacion_correo",
+                    "fecha_aceptacion",
+                    "fecha_confirmacion_plaza",
+                    "motivacion",
+                    "notas",
+                ]
+            },
+        ),
+    ]
+
+    readonly_fields = [
+        "cv",
+        "fecha_registro",
+        "fecha_verificacion_correo",
+        "fecha_aceptacion",
+        "fecha_confirmacion_plaza",
+    ]
+
     list_display = [
         "correo",
         "nombre",
@@ -145,6 +200,25 @@ class ParticipanteAdmin(admin.ModelAdmin):
     ]
     list_filter = [EstadoParticipanteListFilter, "centro_estudio", "ciudad"]
     actions = [aceptar_participante]
+
+    def change_view(self, request, object_id, extra_context=None):
+        # Permiso para ver el CV
+        if not request.user.has_perm("gestion.ver_cv_participante"):
+            personal = self.fieldsets[0][1]["fields"]
+            if "cv" in personal:
+                personal.remove("cv")
+
+        # Permiso para ver DNI y teléfono
+        if not request.user.has_perm("gestion.ver_dni_telefono_participante"):
+            personal = self.fieldsets[0][1]["fields"]
+            if "dni" in personal:
+                personal.remove("dni")
+            if "telefono" in personal:
+                personal.remove("telefono")
+
+        return super(ParticipanteAdmin, self).change_view(
+            request, object_id, extra_context
+        )
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_participante")
