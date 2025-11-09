@@ -2,9 +2,14 @@
 .env
 db.sqlite3
 
+*.csv
+
 # Assets
 media/
 static/
+
+# Logs
+log/*.log
 
 # Python
 __pycache__
