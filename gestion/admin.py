@@ -16,7 +16,14 @@ from gestion.models import (
 )
 
 
+@admin.action(permissions=["aceptar"])
 def aceptar_participante(modeladmin, request, queryset):
+    if not request.user.has_perm("gestion.aceptar_participante"):
+        modeladmin.message_user(
+            request, "No tienes permiso para realizar esta acción", messages.ERROR
+        )
+        return
+
     verificados = queryset.filter(fecha_verificacion_correo__isnull=False)
     no_verificados = queryset.filter(fecha_verificacion_correo__isnull=True)
 
@@ -138,6 +145,9 @@ class ParticipanteAdmin(admin.ModelAdmin):
     ]
     list_filter = [EstadoParticipanteListFilter, "centro_estudio", "ciudad"]
     actions = [aceptar_participante]
+
+    def has_aceptar_permission(self, request):
+        return request.user.has_perm("gestion.aceptar_participante")
 
 
 class TokenAdmin(admin.ModelAdmin):

@@ -151,6 +151,10 @@ class Participante(Persona):
         verbose_name = "Participante"
         verbose_name_plural = "Participantes"
 
+        permissions = [
+            ("aceptar_participante", "Aceptar Participante"),
+        ]
+
     def __str__(self):
         return f"{self.nombre} ({'No aceptado' if not self.fecha_aceptacion else 'Aceptado'})"
 
