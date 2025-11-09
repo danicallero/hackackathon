@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -45,13 +45,13 @@ def registro(request: HttpRequest):
             }
             email = EmailMultiAlternatives(
                 EMAIL_VERIFICACION_ASUNTO,
-                render_to_string("correo/....txt", params),
+                render_to_string("correo/verificacion_correo.txt", params),
                 to=(participante.correo,),
                 reply_to=("info@gpul.org",),
                 headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
             )
             email.attach_alternative(
-                render_to_string("correo/....html", params), "text/html"
+                render_to_string("correo/verificacion_correo.html", params), "text/html"
             )
             email.send(fail_silently=False)
         except ConnectionRefusedError:
@@ -82,7 +82,11 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token inválido", "token": token},
         )
 
-    if not token_obj.valido():
+    participante: Participante = Participante.objects.get(
+        correo=token_obj.persona.correo
+    )
+
+    if not token_obj.valido() and not participante.verificado():
         messages.error(
             request,
             "El token de verificación ha expirado.",
@@ -95,15 +99,15 @@ def verificar_correo(request: HttpRequest, token: str):
 
     ahora = timezone.now()
 
-    participante: Participante = Participante.objects.get(
-        correo=token_obj.persona.correo
-    )
     participante.fecha_verificacion_correo = ahora
     participante.save()
 
     token_obj.fecha_uso = ahora
 
-    messages.success(request, "Correo verificado correctamente")
+    if not participante.verificado():
+        messages.success(request, "Correo verificado correctamente")
+    else:
+        messages.info(request, "Ya habías verificado tu correo")
     return render(request, "verificacion_correcta.html", {"participante": participante})
 
 
@@ -115,19 +119,13 @@ def confirmar_plaza(request: HttpRequest, token: str):
         messages.error(request, "Token inválido")
         return redirect("registro")
 
-    if not token_obj.valido():
-        messages.error(
-            request,
-            "El token de verificación ha expirado. Ponte en contacto con nosotros para confirmar tu plaza a través de hackudc@gpul.org.",
-        )
-        return redirect("registro")
+    participante: Participante = Participante.objects.get(
+        correo=token_obj.persona.correo
+    )
 
     if request.method == "POST":
         ahora = timezone.now()
 
-        participante: Participante = Participante.objects.get(
-            correo=token_obj.persona.correo
-        )
         participante.fecha_confirmacion_plaza = ahora
         participante.save()
 
@@ -136,20 +134,21 @@ def confirmar_plaza(request: HttpRequest, token: str):
 
         return HttpResponse("Pues ya estás aceptado")
 
-    # return HttpResponse(
-    #     f"Hola {token}, tienes hasta {token_obj.fecha_expiracion} para confirmar tu plaza"
-    # )
-    # print(type(datetime.now()))
-    # print(datetime.now())
-    # print(type(token_obj.fecha_expiracion))
-    # print(token_obj.fecha_expiracion)
-    # rprint(datetime.now(timezone.utc) - token_obj.fecha_expiracion)
+    if not token_obj.valido() and not participante.confirmado():
+        messages.error(
+            request,
+            "El token de verificación ha expirado. Ponte en contacto con nosotros para confirmar tu plaza a través de hackudc@gpul.org.",
+        )
+        return redirect("registro")
+
+    if participante.confirmado():
+        return HttpResponse("Ya estás aceptado")
+
     return render(
         request,
         "confirmar-plaza.html",
         {
             "token": token_obj,
-            # "restante": datetime.utcnow() - token_obj.fecha_expiracion,
         },
     )
 
@@ -355,4 +354,3 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
         "gestion/editar_presencia.html",
         {"presencia": presencia, "form": form},
     )
-

@@ -1,15 +1,37 @@
 {% extends "marco.html" %}
 
 {% block title %}Registro{% endblock %}
+{% load static %}
 
 {% block content %}
-<div id="registro">
-    <h1>Registro de participantes</h1>
+<style>
+    #hackudc-logo {
+        width: 50%;
 
-    {% if user.is_authenticated and user.is_staff %}
+        display: block;
+        margin: 0 auto;
+    }
+
+    #hackudc-registro {
+        text-align: center;
+        font-size: 3em;
+    }
+
+    #hackudc-registro span {
+        color: var(--amarillo-hackudc);
+        text-shadow: 3px 3px 0px var(--sombra-hackudc);
+    }
+</style>
+
+<div id="registro">
+    <!--<h1>Registro de participantes</h1>-->
+    <img src="{% static 'svg/hackudc.svg' %}" id="hackudc-logo">
+    <h1 id="hackudc-registro">Regístrate para <span>HackUDC 2026</span></h1>
+
+    <!--{% if user.is_authenticated and user.is_staff %}
     <a href="/gestion">Gestión</a>
     <hr>
-    {% endif %}
+    {% endif %}-->
 
     <form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}

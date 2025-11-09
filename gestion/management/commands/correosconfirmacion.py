@@ -4,9 +4,10 @@ from datetime import datetime, timedelta
 
 from django.core.management import BaseCommand
 from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.utils import timezone
 
-from hackudc.models import Participante, Token
+from gestion.models import Participante, Token
 
 
 class Command(BaseCommand):
@@ -28,9 +29,14 @@ class Command(BaseCommand):
             token.save()
 
             try:
+                params = {
+                    "nombre": participante.nombre,
+                    "token": token.token,
+                    "host": "127.0.0.1:8000",
+                }
                 email = EmailMessage(
                     "PLAZA",
-                    str(token.token),
+                    render_to_string("correo/confirmacion_plaza.txt", params),
                     to=(participante.correo,),
                     reply_to=("info@gpul.org",),
                     headers={

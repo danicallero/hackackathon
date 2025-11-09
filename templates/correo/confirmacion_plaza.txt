@@ -1,0 +1,3 @@
+Hola {{ nombre }}. Tu token de inicio de sesión es: {{ token }}
+
+Puedes confirmar tu plaza haciendo clic en el siguiente enlace: https://{{ host }}/confirmar/{{ token }}

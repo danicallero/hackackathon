@@ -47,12 +47,21 @@ a {
     margin-bottom: 2rem;
 }*/
 
-div#content {
+div#content, nav {
     width: min(calc(100% - 2rem), var(--max-width));
     margin: 0 auto;
 
     margin-bottom: 1rem;
 }
+
+nav a {
+    text-decoration: none;
+    border: 1px solid var(--amarillo-hackudc);
+    border-radius: 9999px;
+    padding: .5rem 1rem;
+}
+
+nav { margin-top: 2em; }
 
 div#footer {
     width: 100%;

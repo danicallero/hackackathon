@@ -22,6 +22,12 @@
     </head>
 
     <body>
+        <nav>
+            <a href="https://hackudc.gpul.org">Volver al inicio</a>
+            {% if user.is_authenticated and user.is_staff %}
+                <a href="/gestion" style="color: #007bff; border-color: #007bff; margin-left: 1em;">Gestión</a>
+            {% endif %}
+        </nav>
         <div class="messages">
             {% for message in messages %}
             <div class="message message-{{ message.tags }}">{{ message }}</div>

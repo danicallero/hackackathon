@@ -1,11 +1,32 @@
 {% extends 'marco.html' %}
 
 {% block title %}Verificación correo{% endblock title %}
+{% load static %}
 
 {% block content %}
+<style>
+    #hackudc-logo {
+        width: 50%;
+
+        display: block;
+        margin: 0 auto;
+    }
+
+    #hackudc-registro {
+        text-align: center;
+        font-size: 3em;
+    }
+
+    #hackudc-registro span {
+        color: var(--amarillo-hackudc);
+        text-shadow: 3px 3px 0px var(--sombra-hackudc);
+    }
+</style>
+
+<img src="{% static 'svg/hackudc.svg' %}" id="hackudc-logo">
+
 <div id="verificacion-correo">
     <p>
-        Tu correo ha sido verificado!
         <hr>
         Comprueba que los detalles que especificaste sean correctos:
     </p>
