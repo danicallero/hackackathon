@@ -7,82 +7,66 @@ from django.core.management.base import BaseCommand, CommandError
 class Command(BaseCommand):
     help = "Crea los grupos base para la gestión de usuarios y asigna permisos"
 
-    def add_arguments(self, parser): ...
-
     def handle(self, *args, **options):
 
-        # Permisos específicos
-        p_aceptar_participante = Permission.objects.filter(
-            codename="aceptar_participante"
-        ).first()
-        if p_aceptar_participante is None:
-            raise CommandError("Permiso 'aceptar_participante' inexistente")
-
-        p_ver_cv_participante = Permission.objects.filter(
-            codename="ver_cv_participante"
-        ).first()
-        if p_ver_cv_participante is None:
-            raise CommandError("Permiso 'ver_cv_participante' inexistente")
-
-        p_ver_dni_telefono_participante = Permission.objects.filter(
-            codename="ver_dni_telefono_participante"
-        ).first()
-        if p_ver_dni_telefono_participante is None:
-            raise CommandError("Permiso 'ver_dni_telefono_participante' inexistente")
-
-        # Permisos globales
-        add_all, change_all, delete_all, view_all = self._get_permisos_modelos()
+        # modelos_disponibles = [
+        #     "mentor",
+        #     "participante",
+        #     "pase",
+        #     "patrocinador",
+        #     "persona",
+        #     "presencia",
+        #     "restriccionalimentaria",
+        #     "tipopase",
+        #     "token",
+        # ]
 
         # Grupos
         permisos = {
-            "Administradores": view_all
-            + change_all
+            "Administradores": self.obtener_permisos(
+                ["participante", "mentor", "tipopase"], view=True, add=True, change=True
+            )
             + [
-                p_aceptar_participante,
-                p_ver_cv_participante,
-                p_ver_dni_telefono_participante,
+                "aceptar_participante",
+                "ver_cv_participante",
+                "ver_dni_telefono_participante",
             ],
-            "Revisores": view_all
+            "Revisores": self.obtener_permisos(["participante"], view=True)
             + [
-                p_aceptar_participante,
-                p_ver_cv_participante,
-                p_ver_dni_telefono_participante,
+                "aceptar_participante",
+                "ver_cv_participante",
             ],
-            "Ver modelos de gestión": view_all,
+            "Ver modelos de gestión": self.obtener_permisos(
+                ["participante"], view=True
+            ),
         }
 
         for nombre, permisos_grupo in permisos.items():
             grupo, _creado = Group.objects.get_or_create(name=nombre)
-            grupo.permissions.set(permisos_grupo)
+            grupo.permissions.set(
+                (
+                    Permission.objects.filter(codename=f"add_{permiso}").first()
+                    for permiso in permisos_grupo
+                )
+            )
 
             if _creado:
                 self.stdout.write(self.style.SUCCESS(f"Grupo '{nombre}' creado"))
             self.stdout.write(self.style.SUCCESS(f"Permisos asignados a '{nombre}'"))
 
     # Permisos genéricos para los modelos relevantes
-    def _get_permisos_modelos(self):
-        modelos = [
-            "mentor",
-            "participante",
-            "pase",
-            "patrocinador",
-            "persona",
-            "presencia",
-            "restriccionalimentaria",
-            "tipopase",
-            "token",
-        ]
-        add_all = [
-            Permission.objects.filter(codename=f"add_{m}").first() for m in modelos
-        ]
-        change_all = [
-            Permission.objects.filter(codename=f"change_{m}").first() for m in modelos
-        ]
-        delete_all = [
-            Permission.objects.filter(codename=f"delete_{m}").first() for m in modelos
-        ]
-        view_all = [
-            Permission.objects.filter(codename=f"view_{m}").first() for m in modelos
-        ]
+    def obtener_permisos(
+        self, modelos, add=False, change=False, delete=False, view=False
+    ):
+        permisos = list()
 
-        return add_all, change_all, delete_all, view_all
+        if add:
+            permisos.extend([f"add_{m}" for m in modelos])
+        if change:
+            permisos.extend([f"change_{m}" for m in modelos])
+        if delete:
+            permisos.extend([f"delete_{m}" for m in modelos])
+        if view:
+            permisos.extend([f"view_{m}" for m in modelos])
+
+        return permisos
