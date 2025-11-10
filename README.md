@@ -2,7 +2,7 @@
 
 Un proyecto hecho con Django para la gestión de hackackatones.
 
-# Instrucciones para desarrollo
+## Instrucciones para desarrollo
 
 Después de clonar el repositorio, sigue estos pasos para iniciar el desarrollo:
 
@@ -17,7 +17,7 @@ Después de clonar el repositorio, sigue estos pasos para iniciar el desarrollo:
    `python manage.py fakekeuserdata <cantidad>`
 
 
-# Diagrama Entidad-Relación de los modelos empleados
+## Diagrama Entidad-Relación de los modelos
 
 ```mermaid
 erDiagram
