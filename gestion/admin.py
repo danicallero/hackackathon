@@ -201,7 +201,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
     list_filter = [EstadoParticipanteListFilter, "centro_estudio", "ciudad"]
     actions = [aceptar_participante]
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         # Permiso para ver el CV
         if not request.user.has_perm("gestion.ver_cv_participante"):
             personal = self.fieldsets[0][1]["fields"]
@@ -217,7 +217,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
                 personal.remove("telefono")
 
         return super(ParticipanteAdmin, self).change_view(
-            request, object_id, extra_context
+            request, object_id, form_url, extra_context
         )
 
     def has_aceptar_permission(self, request):
