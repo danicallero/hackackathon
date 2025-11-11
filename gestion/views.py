@@ -31,7 +31,7 @@ from gestion.models import (
 @login_not_required
 @require_http_methods(["GET", "POST"])
 def registro(request: HttpRequest):
-    if timezone.now() > datetime.fromisoformat(settings.PLAZO_REGISTRO):
+    if timezone.now() > datetime.fromisoformat(settings.FECHA_FIN_REGISTRO):
         return render(request, "registro_cerrado.html")
 
     if request.method == "GET":
