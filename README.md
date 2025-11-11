@@ -16,7 +16,7 @@ Después de clonar el repositorio, sigue estos pasos para iniciar el desarrollo:
 5. Crea un superusuario: \
    `python manage.py createsuperuser` (puedes dejar el correo en blanco)
 6. (Opcional) Generar Participantes de ejemplo:\
-   `python manage.py fakekeuserdata <cantidad>`
+   `python manage.py fakeuserdata <cantidad>`
 
 ## Diagrama Entidad-Relación de los modelos
 
