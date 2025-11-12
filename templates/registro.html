@@ -1,15 +1,12 @@
 {% extends "marco.html" %}
 
 {% block title %}Registro{% endblock %}
-{% load static %}
 
 {% block head %}{{ form.media }}{% endblock head %}
 
 {% block content %}
 <div id="registro">
-    <!--<h1>Registro de participantes</h1>-->
-    <img src="{% static 'svg/hackudc.svg' %}" id="logo">
-    <h1 id="subtitulo">Regístrate para <span>HackUDC 2026</span></h1>
+    {% include 'logo.html' with subtitulo="Regístrate para <span>HackUDC 2026</span>" %}
 
     <form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
