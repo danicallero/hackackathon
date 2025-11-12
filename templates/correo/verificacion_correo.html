@@ -1,0 +1,12 @@
+{% extends "correo/marco.html" %}
+
+{% block title %}{{ asunto }}{% endblock %}
+
+{% block content %}
+
+¡Hola, {{ nombre }}!
+
+<p>Puedes verificar tu correo para completar la inscripción en HackUDC en el siguiente enlace: <a href="https://{{ host }}/verificar/{{ token }}">https://{{ host }}/verificar/{{ token }}</a></p>
+
+<p>Atentamente,</p>
+{% endblock content %}

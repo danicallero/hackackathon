@@ -1,0 +1,19 @@
+{% extends "correo/marco.html" %}
+
+{% block title %}{{ asunto }}{% endblock %}
+
+{% block content %}
+
+<p>Hola {{ nombre }}.</p>
+
+<p>Puedes aceptar tu plaza en HackUDC haciendo clic en el siguiente enlace:</p>
+<p><a href="https://{{ host }}/confirmar/{{ token }}">https://{{ host }}/confirmar/{{ token }}</a></p>
+
+<p>¡Gracias por animarte a participar!</p>
+
+<p>Tienes hasta el {{ expiracion|date:'d M Y \a \l\a\s H:i' }} para aceptarla. Fuera de ese plazo no podremos garantizártela.</p>
+
+<p>Una vez aceptes tu plaza, no tendrás que hacer nada más, pero si finalmente sabes que no podrás acudir, te agradeceríamos que utilices el mismo enlace para indicárnoslo. Así, podrémos permitir participar a otra persona de la lista de espera.</p>
+
+<p>Atentamente,</p>
+{% endblock content %}

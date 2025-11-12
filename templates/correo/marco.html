@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock title %}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+        <base target="_blank">
+        <style>
+            body {
+                background-color: #F0F1F3;
+                font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, sans-serif;
+                font-size: 15px;
+                line-height: 26px;
+                margin: 0;
+                color: #fff;
+            }
+
+            pre {
+                background: #181818;
+                padding: 2px;
+            }
+
+            table {
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+            table td {
+                border-color: #ddd;
+                padding: 5px;
+            }
+            h2 {
+                /* color: #FFFC; */
+              color: #ffd230;
+              text-shadow: 2px 2px #7c3f00;
+            }
+
+            .wrap {
+                padding: 30px;
+                max-width: 525px;
+                max-widtdh: 65%;
+                margin: 0 auto;
+                border-radius: 5px;
+                background-color: #242424;
+                border-radius: 5px;
+                border: 1px solid #ffd230;
+            }
+
+            .button {
+                background: #0055d4;
+                border-radius: 3px;
+                text-decoration: none !important;
+                color: #fff !important;
+                font-weight: bold;
+                padding: 10px 30px;
+                display: inline-block;
+            }
+            .button:hover {
+                background: #111;
+            }
+
+            .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #888;
+            }
+                .footer a {
+                    color: #888;
+                    margin-right: 5px;
+                }
+
+            .gutter {
+                padding: 30px;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+            a {
+                text-decoration: underline;
+                color: #ffd230;
+            }
+            @media screen and (max-width: 600px) {
+                .wrap {
+                    max-width: auto;
+                }
+                .gutter {
+                    padding: 10px;
+                }
+            }
+        </style>
+    </head>
+<body style="background-color: #181818; font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, sans-serif;font-size: 15px;line-height: 26px;margin: 0; color: white;">
+    <div class="gutter" style="padding: 30px;">&nbsp;</div>
+    <div class="wrap" style="padding: 30px; max-width: 525px; margin: 0 auto;">
+        <img src="https://listmonk.gpul.org/uploads/hackudc-correo.png" style="width: 80%; margin: auto; display: block">
+        {% block content %}{% endblock content %}
+
+      <!-- footer -->
+      <div style="display: flex; flex-direction: row; width: 100%; color: #FFFA">
+        <img src="https://s3.eu-west-1.amazonaws.com/listmonk-gpul/logo_gpul_FeU9Yn.png" style="width: 5rem; height: 100%">
+        <div>
+          <small>Organización HackUDC</small><br>
+          <small>Grupo de Programadores e Usuarios de Linux</small>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
