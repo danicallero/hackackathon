@@ -73,6 +73,24 @@ class ParticipanteForm(forms.ModelForm):
         css = {"all": ["css/registro.css"]}
 
 
+class RevisarParticipanteForm(ParticipanteForm):
+    class Meta(ParticipanteForm.Meta):
+        exclude = [
+            "cv",
+        ]
+
+    class Media(ParticipanteForm.Media):
+        pass
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # for field_name in self.Meta.fields:
+        #     if field_name not in self.Meta.exclude:
+        #         field = self.fields[field_name]
+        #         field.disabled = True
+
+
 class Registro(forms.Form):
     persona = forms.CharField(label="Correo a registrar", max_length=100)
     acreditacion = forms.CharField(

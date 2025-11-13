@@ -5,6 +5,7 @@
 
 {% block head %}
 <link href="{% static 'css/verificar.css' %}" media="all" rel="stylesheet">
+{{ form.media }}
 {% endblock head %}
 
 {% block content %}
@@ -14,26 +15,17 @@
 
 {% include 'logo.html' %}
 
+<hr>
+
 <div id="verificacion-correo">
     <p>
-        <hr>
-        Comprueba que los detalles que especificaste sean correctos:
+        Comprueba que los detalles del registro sean correctos.
+        Si hay algún error,
+        <a href="mailto:hackudc@gpul.org?subject=[REGISTRO] - Error en los detalles del registro">avísanos</a>.
     </p>
-    <ul>
-        <li>Nombre: {{ participante.nombre }}</li>
-        <li>DNI: {{ participante.dni }}</li>
-        <li>Teléfono: {{ participante.telefono }}</li>
-        <li>Año de nacimiento: {{ participante.ano_nacimiento }}</li>
-        <li>Curso actual: {{ participante.curso }}</li>
-        <li>Nombre del estudio: {{ participante.nombre_estudio }}</li>
-        <li>Centro de estudio: {{ participante.centro_estudio }}</li>
-        <li>Quieres créditos: {{ participante.quiere_creditos|yesno }} (solo UDC)</li>
-        <li>Talla de camiseta pedida: {{ participante.talla_camiseta }}</li>
-        <li>Quieres compartir tu cv: {{ participante.compartir_cv|yesno }}</li>
-    </ul>
-    <p>
-        Si hay algún error mándanos un correo
-        <a href="mailto:hackudc@gpul.org?subject=[REGISTRO] - Error en los detalles del registro">aquí</a>.
-    </p>
+
+    <form style="pointer-events: none;">
+        {{ form }}
+    </form>
 </div>
 {% endblock content %}

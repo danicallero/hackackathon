@@ -17,6 +17,7 @@ from gestion.forms import (
     ParticipanteForm,
     PaseForm,
     Registro,
+    RevisarParticipanteForm,
 )
 from gestion.models import (
     Participante,
@@ -119,11 +120,18 @@ def verificar_correo(request: HttpRequest, token: str):
         token_obj.fecha_uso = ahora
         token_obj.save()
 
-    messages.success(request, "Correo verificado correctamente")
+    messages.success(
+        request,
+        "Tu correo está verificado! Vuelve cuando quieras para revisar tus detalles!",
+    )
     return render(
         request,
         "verificacion_correcta.html",
-        {"participante": participante, "ocultar_nav": True},
+        {
+            "participante": participante,
+            "form": RevisarParticipanteForm(instance=participante),
+            "ocultar_nav": True,
+        },
     )
 
 

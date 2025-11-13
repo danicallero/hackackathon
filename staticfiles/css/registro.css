@@ -106,6 +106,10 @@ form label:has(~ textarea:required):after {
     color: red;
 }
 
+form label:has(> input[type="checkbox"][checked]) {
+    color: var(--acento-hackudc);
+}
+
 input,
 select,
 textarea {
