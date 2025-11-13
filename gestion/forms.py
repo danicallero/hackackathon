@@ -26,6 +26,7 @@ class ParticipanteForm(forms.ModelForm):
             "ciudad",
             # Restricciones alimentarias
             "restricciones_alimentarias",
+            "detalle_restricciones_alimentarias",
             # Estudios
             "nivel_estudio",
             "centro_estudio",

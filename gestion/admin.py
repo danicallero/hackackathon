@@ -189,6 +189,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
                 "fields": [
                     "acreditacion",
                     "restricciones_alimentarias",
+                    "detalle_restricciones_alimentarias",
                     "talla_camiseta",
                     "fecha_registro",
                     "fecha_verificacion_correo",

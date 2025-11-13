@@ -68,6 +68,12 @@ class PersonaAbstracta(models.Model):
         blank=True,
         related_name="%(class)ss",
     )
+    detalle_restricciones_alimentarias = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        verbose_name="Detalles sobre las restricciones alimentarias",
+    )
 
     class Meta:
         abstract = True

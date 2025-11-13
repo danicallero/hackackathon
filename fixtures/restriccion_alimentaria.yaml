@@ -21,8 +21,8 @@
 - model: gestion.restriccionalimentaria
   pk: 6
   fields:
-    nombre: Alergia (Especificar en notas)
+    nombre: Alergia (Especificar en detalles)
 - model: gestion.restriccionalimentaria
   pk: 7
   fields:
-    nombre: Otro (Especificar en notas)
+    nombre: Otro (Especificar en detalles)
