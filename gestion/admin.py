@@ -75,6 +75,7 @@ class EstadoParticipanteListFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return [
             ("registrado", "Registrado (sin verificar correo)"),
+            ("error_verificacion", "Error de verificación del correo"),
             ("verificado", "Correo verificado"),
             ("aceptado", "Aceptado"),
             ("confirmado", "Plaza confirmada"),
@@ -86,6 +87,16 @@ class EstadoParticipanteListFilter(admin.SimpleListFilter):
             case "registrado":
                 return queryset.filter(
                     fecha_registro__isnull=False,
+                    motivo_error_correo_verificacion__isnull=True,
+                    fecha_verificacion_correo__isnull=True,
+                    fecha_aceptacion__isnull=True,
+                    fecha_confirmacion_plaza__isnull=True,
+                    fecha_rechazo_plaza__isnull=True,
+                )
+            case "error_verificacion":
+                return queryset.filter(
+                    fecha_registro__isnull=False,
+                    motivo_error_correo_verificacion__isnull=False,
                     fecha_verificacion_correo__isnull=True,
                     fecha_aceptacion__isnull=True,
                     fecha_confirmacion_plaza__isnull=True,
@@ -184,6 +195,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
                     "fecha_aceptacion",
                     "fecha_confirmacion_plaza",
                     "fecha_rechazo_plaza",
+                    "motivo_error_correo_verificacion",
                     "motivacion",
                     "notas",
                 ]
@@ -198,6 +210,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "fecha_aceptacion",
         "fecha_confirmacion_plaza",
         "fecha_rechazo_plaza",
+        "motivo_error_correo_verificacion",
     ]
 
     list_display = [
@@ -212,6 +225,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "aceptado",
         "confirmado",
         "rechazo",
+        "error_verificacion",
     ]
     list_filter = [EstadoParticipanteListFilter, "centro_estudio", "ciudad"]
     actions = [aceptar_participante]

@@ -130,6 +130,24 @@ class Persona(PersonaAbstracta):
         default=None,
         verbose_name="Fecha de rechazo de la plaza",
     )
+    motivo_error_correo_verificacion = models.TextField(
+        max_length=4096,
+        null=True,
+        blank=True,
+        default=None,
+        verbose_name="Motivo del error en el envío del correo de verificación",
+    )
+
+    @admin.display(
+        boolean=True,
+        ordering="fecha_registro",
+        description="Error de verificación de correo",
+    )
+    def error_verificacion(self):
+        return (
+            self.motivo_error_correo_verificacion is not None
+            and self.fecha_verificacion_correo is None
+        )
 
     @admin.display(
         boolean=True, ordering="fecha_verificacion_correo", description="Verificado"

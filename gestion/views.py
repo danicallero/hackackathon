@@ -64,10 +64,13 @@ def registro(request: HttpRequest):
                 render_to_string("correo/verificacion_correo.html", params), "text/html"
             )
             email.send(fail_silently=False)
-        except ConnectionRefusedError:
+        except Exception as e:
+            participante.motivo_error_correo_verificacion = str(e)[:4096]
+            participante.save()
+
             messages.error(
                 request,
-                "Error al mandar el correo. Inténtalo más tarde o contacta con nosotros a través de hackudc@gpul.org",
+                "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
             return render(request, "registro.html", {"form": form})
 
