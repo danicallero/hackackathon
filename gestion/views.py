@@ -20,6 +20,7 @@ from gestion.forms import (
     RevisarParticipanteForm,
 )
 from gestion.models import (
+    Mentor,
     Participante,
     Pase,
     Persona,
@@ -419,3 +420,37 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
         "gestion/editar_presencia.html",
         {"presencia": presencia, "form": form},
     )
+
+
+@require_http_methods(["GET"])
+def info_participante(request: HttpRequest, correo: str):
+    persona = Persona.objects.filter(correo=correo).first()
+    if not persona:
+        messages.error(request, "No existe ninguna persona con ese correo.")
+        return render(request, "vacio.html", {"titulo": "Info persona"})
+
+    # Encontrar Participante/Mentor para el formulario
+    if hasattr(persona, "participante"):
+        form = RevisarParticipanteForm(instance=Participante.objects.get(correo=correo))
+    elif hasattr(persona, "mentor"):
+        #! Formulario equivalente para mentores
+        form = RevisarParticipanteForm(instance=Mentor.objects.get(correo=correo))
+    else:
+        messages.error(
+            request,
+            "La persona encontrada con ese correo no es ni participante ni mentor.",
+        )
+        return render(request, "vacio.html")
+
+    # Gestionar permisos
+    if isinstance(form, RevisarParticipanteForm):
+        if not request.user.has_perm("gestion.ver_cv_participante"):
+            if "cv" in form.fields:
+                del form.fields["cv"]
+        if not request.user.has_perm("gestion.ver_dni_telefono_participante"):
+            if "dni" in form.fields:
+                del form.fields["dni"]
+            if "telefono" in form.fields:
+                del form.fields["telefono"]
+
+    return render(request, "verificacion_correcta.html", {"form": form})
