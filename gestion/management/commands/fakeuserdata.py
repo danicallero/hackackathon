@@ -28,7 +28,9 @@ class Command(BaseCommand):
                 correo=fake.email(),
                 nombre=fake.name(),
                 dni=fake.cif(),  # Lo más parecido a un DNI que hay en faker...
-                genero=choice(["Hombre", "Mujer", "Otro"]),
+                genero=choice(
+                    ["H", "M", "O", None],
+                ),
                 telefono=fake.phone_number(),
                 fecha_nacimiento=fake.date_between(
                     date(1990, 1, 1), date(2008, 12, 31)

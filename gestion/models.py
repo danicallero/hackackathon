@@ -5,18 +5,15 @@ from uuid import uuid4
 
 from django.contrib import admin
 from django.core.exceptions import ValidationError
-from django.core.validators import (
-    FileExtensionValidator,
-    MaxValueValidator,
-    MinValueValidator,
-)
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 
 GENEROS = (
-    ("HOMBRE", "Hombre"),
-    ("MUJER", "Mujer"),
-    ("OTRO", "Otro"),
+    ("H", "Hombre"),
+    ("M", "Mujer"),
+    ("O", "Otro"),
+    (None, "Prefiero no decirlo"),
 )
 
 TALLAS_CAMISETA = (
