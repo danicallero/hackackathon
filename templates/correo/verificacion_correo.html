@@ -3,8 +3,10 @@
 {% block title %}{{ asunto }}{% endblock %}
 
 {% block content %}
+    <p>¡Hola, {{ nombre }}!</p>
 
-¡Hola, {{ nombre }}!
-
-<p>Puedes verificar tu correo para completar la inscripción en HackUDC en el siguiente enlace: <a href="https://{{ host }}/verificar/{{ token }}">https://{{ host }}/verificar/{{ token }}</a></p>
+    <p>
+        Puedes verificar tu correo para completar la inscripción en HackUDC en el siguiente enlace:
+        <a href="https://{{ host }}/verificar/{{ token }}">https://{{ host }}/verificar/{{ token }}</a>
+    </p>
 {% endblock content %}
