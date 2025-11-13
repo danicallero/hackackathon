@@ -152,7 +152,7 @@ def confirmar_plaza(request: HttpRequest, token: str):
     if request.method == "GET":
         return render(
             request,
-            "confirmar-plaza.html",
+            "confirmar_plaza.html",
             {"token": token_obj, "participante": participante, "ocultar_nav": True},
         )
 
