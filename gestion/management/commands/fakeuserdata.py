@@ -29,7 +29,7 @@ class Command(BaseCommand):
                 nombre=fake.name(),
                 dni=fake.cif(),  # Lo más parecido a un DNI que hay en faker...
                 genero=choice(
-                    ["H", "M", "O", None],
+                    ["H", "M", "O", "-"],
                 ),
                 telefono=fake.phone_number(),
                 fecha_nacimiento=fake.date_between(

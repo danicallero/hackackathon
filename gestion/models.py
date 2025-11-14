@@ -10,13 +10,15 @@ from django.db import models
 from django.utils import timezone
 
 GENEROS = (
+    (None, ""),
     ("H", "Hombre"),
     ("M", "Mujer"),
     ("O", "Otro"),
-    (None, "Prefiero no decirlo"),
+    ("-", "Prefiero no decirlo"),
 )
 
 TALLAS_CAMISETA = (
+    (None, ""),
     ("S", "S"),
     ("M", "M"),
     ("L", "L"),
@@ -25,6 +27,7 @@ TALLAS_CAMISETA = (
 )
 
 NIVELES_ESTUDIO = (
+    (None, ""),
     ("FORMACION_PROFESIONAL", "Formación Profesional"),
     ("UNIVERSIDAD", "Universidad"),
     ("MASTER", "Máster"),
@@ -91,12 +94,12 @@ class Patrocinador(PersonaAbstracta):
 class Persona(PersonaAbstracta):
     dni = models.CharField(max_length=9, unique=True, null=True, verbose_name="DNI")
     genero = models.CharField(
-        max_length=10, choices=GENEROS, null=True, verbose_name="Género"
+        max_length=10, choices=GENEROS, null=False, verbose_name="Género"
     )
     talla_camiseta = models.CharField(
         max_length=10,
         choices=TALLAS_CAMISETA,
-        null=True,
+        null=False,
         verbose_name="Talla de la camiseta",
     )
 
@@ -193,7 +196,7 @@ class Participante(Persona):
     telefono = models.CharField(max_length=16, null=True, verbose_name="Teléfono")
     fecha_nacimiento = models.DateField(null=True, verbose_name="Fecha de nacimiento")
     nivel_estudio = models.CharField(
-        null=True,
+        null=False,
         max_length=128,
         choices=NIVELES_ESTUDIO,
         verbose_name="Nivel actual de estudios",
