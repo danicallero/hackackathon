@@ -99,6 +99,13 @@ div:has(> #terminos) {
     margin-right: 0.5em;
 }
 
+#id_motivacion_helptext {
+    max-width: 95%;
+    width: 100%;
+    font-style: italic;
+    font-size: 80%;
+}
+
 form label:has(~ input:required):after,
 form label:has(~ select:required):after,
 form label:has(~ textarea:required):after {
