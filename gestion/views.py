@@ -232,13 +232,18 @@ def aceptar_plaza(request: HttpRequest, token: str):
 
 
 @login_not_required
-@require_http_methods(["POST"])
+@require_http_methods(["GET", "POST"])
 def rechazar_plaza(request: HttpRequest, token: str):
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
     if not token_obj:
         messages.error(request, "Token inválido")
         return render(request, "vacio.html")
+
+    if request.method == "GET":
+        return render(
+            request, "rechazar_plaza.html", {"token": token_obj, "ocultar_nav": True}
+        )
 
     ahora = timezone.now()
 

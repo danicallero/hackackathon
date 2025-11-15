@@ -73,6 +73,11 @@ nav {
 .boton-verde { color: var(--verde); border-color: var(--verde); }
 .boton-rojo-fill { border: none; background-color: var(--rojo); }
 .boton-verde-fill { border: none; background-color: var(--verde); }
+button.boton {
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.6;
+}
 
 .transparente { background-color: transparent;}
 

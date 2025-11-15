@@ -1,0 +1,26 @@
+{% extends "marco.html" %}
+
+{% block title %}Rechazar plaza{% endblock title %}
+{% load static %}
+
+{% block head %}
+<link href="{% static 'css/confirmar.css' %}" media="all" rel="stylesheet">
+{% endblock head %}
+
+{% block content %}
+
+{% include 'logo.html' %}
+<div id="confirmacion-plaza">
+    <h1 class="mt-0">Rechazar plaza</h1>
+
+    <p>Estás a punto de rechazar tu plaza en HackUDC. Si la rechazas, se la asignaremos a otra persona de la lista de espera y no podrás recuperarla.</p>
+
+    <div class="flex">
+        <a id="rechazar" class="boton boton-rojo" href="/confirmar/{{ token.token }}">Ups, me equivoqué</a>
+        <form action="{% url 'rechazar-plaza' token.token %}" method="post">
+            {% csrf_token %}
+            <button type="submit" id="rechazar" class="boton boton-rojo-fill" style="border: 1px solid var(--rojo);">Rechazar la plaza</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
