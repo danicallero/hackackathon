@@ -253,6 +253,9 @@ def rechazar_plaza(request: HttpRequest, token: str):
     participante.fecha_rechazo_plaza = ahora
     participante.save()
 
+    token_obj.fecha_uso = ahora
+    token_obj.save()
+
     messages.success(
         request,
         "Has rechazado tu plaza. Si te arrepientes, contáctanos en hackudc@gpul.org",
