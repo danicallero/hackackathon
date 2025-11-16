@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Cambios
+git reset --hard
 git pull
 
 # Preparativos
