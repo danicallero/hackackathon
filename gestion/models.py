@@ -92,7 +92,7 @@ class Patrocinador(PersonaAbstracta):
 
 # Create your models here.
 class Persona(PersonaAbstracta):
-    dni = models.CharField(max_length=9, unique=True, null=True, verbose_name="DNI")
+    dni = models.CharField(max_length=9, unique=True, null=False, verbose_name="DNI")
     genero = models.CharField(
         max_length=10, choices=GENEROS, null=False, verbose_name="Género"
     )
@@ -193,8 +193,8 @@ class Mentor(Persona):
 
 
 class Participante(Persona):
-    telefono = models.CharField(max_length=16, null=True, verbose_name="Teléfono")
-    fecha_nacimiento = models.DateField(null=True, verbose_name="Fecha de nacimiento")
+    telefono = models.CharField(max_length=16, null=False, verbose_name="Teléfono")
+    fecha_nacimiento = models.DateField(null=False, verbose_name="Fecha de nacimiento")
     nivel_estudio = models.CharField(
         null=False,
         max_length=128,
