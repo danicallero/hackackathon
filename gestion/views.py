@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives
 from django.http import FileResponse, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render, Http404
@@ -263,10 +264,9 @@ def gestion(request: HttpRequest):
     return render(request, "gestion/index.html")
 
 
-def cvs(requests: HttpRequest, archivo: str):
-    """
-    Serve media files only to authenticated, authorized users.
-    """
+def cvs(request: HttpRequest, archivo: str):
+    if not request.user.has_perm("gestion.ver_cv_participante"):
+        raise PermissionDenied
 
     ruta = os.path.join(settings.MEDIA_ROOT, "cv", archivo)
 
