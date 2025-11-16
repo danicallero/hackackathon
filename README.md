@@ -8,16 +8,16 @@ Después de clonar el repositorio, sigue estos pasos para iniciar el desarrollo:
 
 1. Definir variables de entorno.\
    Renombra `plantilla.env` a `.env` y fija los valores de las variables.
-2. Crear el entorno virtual de Python e instalar las dependencias (`requirements.txt`).
-3. Crear la base de datos con las migraciones existentes:\
+1. Crear el entorno virtual de Python e instalar las dependencias (`requirements.txt`).
+1. Crear la base de datos con las migraciones existentes:\
    `python manage.py migrate`
-4. Cargar la tabla de restricciones alimentarias:\
+1. Cargar la tabla de restricciones alimentarias:\
    `python manage.py loadddata restriccion_alimentaria`
-5. Crea un superusuario: \
+1. Crea un superusuario:\
    `python manage.py createsuperuser` (puedes dejar el correo en blanco)
-6. Crea los grupos base y asigna los permisos:\
+1. Crea los grupos base y asigna los permisos:\
    `python manage.py crear_permisos_grupos`
-7. (Opcional) Generar Participantes de ejemplo:\
+1. (Opcional) Generar Participantes de ejemplo:\
    `python manage.py fakeuserdata <cantidad>`
 
 ## Diagrama Entidad-Relación de los modelos
@@ -25,11 +25,13 @@ Después de clonar el repositorio, sigue estos pasos para iniciar el desarrollo:
 ```mermaid
 erDiagram
 
+    %% No almacenado en BD.
     PERSONAABSTRACTA {
         string correo PK
         string nombre
         text notas
         string acreditacion
+        text detalle_restricciones_alimentarias
     }
 
     PATROCINADOR {
@@ -48,6 +50,8 @@ erDiagram
         datetime fecha_verificacion_correo
         datetime fecha_aceptacion
         datetime fecha_confirmacion_plaza
+        datetime fecha_rechazo_plaza
+        text motivo_error_correo_verificacion
     }
 
     MENTOR {
@@ -57,7 +61,7 @@ erDiagram
     PARTICIPANTE {
         string correo PK, FK
         string telefono
-        int ano_nacimiento
+        date fecha_nacimiento
         string nivel_estudio
         string nombre_estudio
         string centro_estudio
@@ -74,9 +78,9 @@ erDiagram
 
     PRESENCIA {
         int id_presencia PK
+        string persona_id FK
         datetime entrada
         datetime salida
-        string persona_id FK
     }
 
     TIPOPASE {
@@ -102,18 +106,18 @@ erDiagram
     }
 
     %% Relaciones
-    PERSONAABSTRACTA ||--o{ RESTRICCIONALIMENTARIA : "restricciones_alimentarias"
-    PERSONA ||--o{ PRESENCIA : "tiempo_acceso"
-    PERSONA ||--o{ PASE : "pases"
-    PERSONA ||--o{ TOKEN : "tokens"
+    PERSONAABSTRACTA ||--o{ RESTRICCIONALIMENTARIA : ""
+    PERSONA ||--o{ PRESENCIA : ""
+    PERSONA ||--o{ PASE : ""
+    PERSONA ||--o{ TOKEN : ""
 
-    TIPOPASE ||--o{ PASE : "pases"
+    TIPOPASE ||--o{ PASE : ""
 
     %% Herencia
-    PERSONAABSTRACTA ||--|{ PERSONA : ""
     PERSONAABSTRACTA ||--|{ PATROCINADOR : ""
-    PERSONA ||--|{ MENTOR : ""
+    PERSONAABSTRACTA ||--|{ PERSONA : ""
     PERSONA ||--|{ PARTICIPANTE : ""
+    PERSONA ||--|{ MENTOR : ""
 ```
 
 ## Licencia
