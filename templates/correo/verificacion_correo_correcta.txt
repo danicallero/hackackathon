@@ -2,14 +2,12 @@
 
 ¡Tu solicitud de participación en el HackUDC 2026 ha sido registrada correctamente!
 
-En los próximos meses, **te enviaremos otro correo para confirmar tu asistencia al evento**.
-Es muy importante que sigas las instrucciones del mismo, de lo contrario no podrás asistir.
+Próximamente, te enviaremos otro correo para confirmar tu plaza en el evento.
+Es muy importante que sigas las instrucciones del mismo, de lo contrario podrías perder tu plaza.
 
 Puedes ver tus datos de registro aquí: https://{{ host }}/verificar/{{ token }}
 
-{# CAIXA CSS PARA DISCLAIMER #}
-
-Advertencia: Este correo no confirma la asignación de una plaza para la competición, solo el registro en la lista de solicitantes de plaza para HackUDC.
+[!] Advertencia: Este correo no confirma la asignación de una plaza para la competición, solo el registro en la lista de solicitantes de plaza para HackUDC.
 
 Si tienes alguna duda o has detectado un dato erróneo en tu inscripción, escríbenos a [hackudc@gpul.org](mailto:hackudc@gpul.org).
 
