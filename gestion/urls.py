@@ -7,6 +7,7 @@ from gestion import views
 
 urlpatterns = [
     path("", views.registro, name="registro"),
+    path("media/cv/<archivo>", views.cvs),
     path("verificar/<token>", views.verificar_correo, name="verificar-correo"),
     path("confirmar/<token>", views.confirmar_plaza, name="confirmar-plaza"),
     path("confirmar/<token>/aceptar", views.aceptar_plaza, name="aceptar-plaza"),

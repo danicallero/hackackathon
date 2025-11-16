@@ -1,13 +1,14 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
+import os
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
 from django.core.mail import EmailMultiAlternatives
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import redirect, render
+from django.http import FileResponse, HttpRequest, HttpResponse
+from django.shortcuts import redirect, render, Http404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
@@ -264,6 +265,19 @@ def rechazar_plaza(request: HttpRequest, token: str):
 
 def gestion(request: HttpRequest):
     return render(request, "gestion/index.html")
+
+
+def cvs(requests: HttpRequest, archivo: str):
+    """
+    Serve media files only to authenticated, authorized users.
+    """
+
+    ruta = os.path.join(settings.MEDIA_ROOT, "cv", archivo)
+
+    if not os.path.exists(ruta) or not os.path.isfile(ruta):
+        raise Http404("File not found")
+
+    return FileResponse(open(ruta, "rb"), as_attachment=False)
 
 
 @require_http_methods(["GET", "POST"])
