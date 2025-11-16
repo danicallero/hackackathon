@@ -46,7 +46,9 @@ def registro(request: HttpRequest):
         token = Token(
             tipo="VERIFICACION",
             persona=participante,
-            fecha_expiracion=timezone.now() + timedelta(days=7),
+            fecha_expiracion=(timezone.now() + timedelta(days=7)).replace(
+                hour=23, minute=59, second=59
+            ),
         )
         token.save()
         try:
