@@ -41,7 +41,7 @@ def registro(request: HttpRequest):
         return render(request, "registro.html", {"form": ParticipanteForm()})
 
     form = ParticipanteForm(request.POST, request.FILES)
-    if form.is_valid():
+    if form.is_valid() and request.POST.get("acepta_terminos", False):
         participante: Participante = form.save()
         token = Token(
             tipo="VERIFICACION",
