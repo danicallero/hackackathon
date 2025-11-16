@@ -9,26 +9,6 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    replaces = [
-        ("gestion", "0001_initial"),
-        ("gestion", "0002_remove_persona_aceptado_persona_fecha_aceptacion_and_more"),
-        ("gestion", "0003_token"),
-        ("gestion", "0004_alter_presencia_entrada"),
-        ("gestion", "0005_alter_token_token"),
-        ("gestion", "0006_sqlite_pragmas"),
-        ("gestion", "0007_alter_participante_ano_nacimiento_and_more"),
-        ("gestion", "0008_remove_token_tiempo_validez_minutos_and_more"),
-        ("gestion", "0009_alter_participante_options"),
-        ("gestion", "0010_alter_participante_options_alter_persona_options_and_more"),
-        ("gestion", "0011_persona_fecha_rechazo_plaza"),
-        ("gestion", "0012_participante_ano_nacimiento_to_fecha_nacimiento"),
-        ("gestion", "0013_persona_motivo_error_correo_verificacion"),
-        ("gestion", "0014_detalle_restricciones_alimentarias"),
-        ("gestion", "0015_alter_persona_genero"),
-        ("gestion", "0016_alter_participante_nivel_estudio_and_more"),
-        ("gestion", "0017_alter_participante_fecha_nacimiento_and_more"),
-    ]
-
     initial = True
 
     dependencies = []
@@ -362,10 +342,6 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-        ),
-        migrations.RunSQL(
-            sql="\n            PRAGMA journal_mode=WAL;\n            PRAGMA synchronous=normal;\n            PRAGMA busy_timeout=5000;\n            PRAGMA foreign_keys=ON;\n            ",
-            reverse_sql="\n            PRAGMA journal_mode=DELETE;\n            PRAGMA synchronous=FULL;\n            PRAGMA busy_timeout=0;\n            PRAGMA foreign_keys=OFF;\n            ",
         ),
         migrations.AlterField(
             model_name="participante",
