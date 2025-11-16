@@ -208,7 +208,9 @@ class Participante(Persona):
     centro_estudio = models.CharField(
         max_length=128, null=True, verbose_name="Centro de estudios"
     )
-    curso = models.CharField(max_length=128, null=True, verbose_name="Curso actual")
+    curso = models.CharField(
+        max_length=128, null=True, blank=True, verbose_name="Curso actual (si aplica)"
+    )
     ciudad = models.CharField(
         max_length=128, null=True, verbose_name="Ciudad de residencia"
     )
