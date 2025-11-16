@@ -82,39 +82,6 @@ button.boton {
 .transparente { background-color: transparent;}
 
 
-/* Footer */
-div#footer {
-    width: 100%;
-    max-width: min(100% - 1em, 1200px);
-    margin: 0.5em auto;
-    margin-top: auto;
-
-    background-color: #0f0f0f7f;
-    box-shadow: 0 -2px 16px rgba(255, 255, 255, 0.2);
-    border-radius: 0.75em;
-    backdrop-filter: blur(2px);
-}
-
-div#footer .footer-content {
-    display: flex;
-    justify-content: center;
-
-    padding: 0.5em 1em;
-
-    text-align: center;
-    font-size: 0.8em;
-    color: #666;
-}
-
-div#footer p {
-    margin: 0;
-}
-
-div#footer a {
-    color: #999;
-}
-
-
 /* GENERAL */
 .lucide {
     vertical-align: middle;
