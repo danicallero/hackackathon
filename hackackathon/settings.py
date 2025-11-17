@@ -286,6 +286,7 @@ MAIL_ADMIN = os.getenv("MAIL_ADMIN")
 # Asuntos de los correos
 EMAIL_VERIFICACION_ASUNTO = "HackUDC 2026 - Confirma tu correo ✉️"
 EMAIL_CONFIRMACION_ASUNTO = "HackUDC 2026 - Confirma tu plaza! <emoji>"
+EMAIL_VERIFICACION_CORRECTA_ASUNTO = "HackUDC 2026 - Solicitud registrada correctamente"
 # -----------------------------------------------------------------------------
 
 ADMINS = [

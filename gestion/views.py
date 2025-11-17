@@ -128,10 +128,9 @@ def verificar_correo(request: HttpRequest, token: str):
                 "nombre": participante.nombre,
                 "token": token_obj.token,
                 "host": request.get_host(),
-                "asunto": "HackUDC - Correo verificado",
             }
             email = EmailMultiAlternatives(
-                "HackUDC - Correo verificado",
+                settings.EMAIL_VERIFICACION_CORRECTA_ASUNTO,
                 render_to_string("correo/verificacion_correo_correcta.txt", params),
                 to=(participante.correo,),
                 reply_to=("hackudc@gpul.org",),
