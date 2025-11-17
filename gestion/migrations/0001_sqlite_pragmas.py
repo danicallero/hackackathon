@@ -3,7 +3,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [("gestion", "0001_squashed_initial")]
+    initial = True
+
+    dependencies = []
 
     atomic = False
 
