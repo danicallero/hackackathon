@@ -11,15 +11,6 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Configuración de entorno ----------------------------------------------------
-# Host de la web general del evento
-HOST_LANDING = os.getenv("HOST_LANDING")
-# Host de la web del registro (esta)
-HOST_REGISTRO = os.getenv("HOST_REGISTRO")
-# -----------------------------------------------------------------------------
-
-
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -32,8 +23,10 @@ SECRET_KEY_FALLBACKS = [
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [HOST_REGISTRO]
+# Host de la web de registro
+HOST_REGISTRO = os.getenv("HOST_REGISTRO")
 
+ALLOWED_HOSTS = [HOST_REGISTRO]
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
 
