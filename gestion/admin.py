@@ -249,14 +249,19 @@ class ParticipanteAdmin(admin.ModelAdmin):
         if not request.user.has_perm("gestion.ver_cv_participante"):
             personal = self.fieldsets[0][1]["fields"]
             if "cv" in personal:
+                logger.debug(f"{request.user.username} no tiene permiso para ver CVs.")
                 personal.remove("cv")
 
         # Permiso para ver DNI y teléfono
         if not request.user.has_perm("gestion.ver_dni_telefono_participante"):
             personal = self.fieldsets[0][1]["fields"]
             if "dni" in personal:
+                logger.debug(f"{request.user.username} no tiene permiso para ver DNIs.")
                 personal.remove("dni")
             if "telefono" in personal:
+                logger.debug(
+                    f"{request.user.username} no tiene permiso para ver teléfonos."
+                )
                 personal.remove("telefono")
 
         return super(ParticipanteAdmin, self).change_view(

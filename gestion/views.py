@@ -1,6 +1,6 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
-import os
+import logging, os
 from datetime import timedelta
 
 from django.conf import settings
@@ -31,11 +31,14 @@ from gestion.models import (
     Token,
 )
 
+logger = logging.getLogger(__name__)
+
 
 @login_not_required
 @require_http_methods(["GET", "POST"])
 def registro(request: HttpRequest):
     if timezone.now() > settings.FECHA_FIN_REGISTRO:
+        logger.debug("Intento de acceso con el registro cerrado")
         return render(request, "registro_cerrado.html")
 
     if request.method == "GET":
@@ -73,6 +76,9 @@ def registro(request: HttpRequest):
             participante.motivo_error_correo_verificacion = str(e)[:4096]
             participante.save()
 
+            logging.error("Error al enviar el correo de verificación:")
+            logging.error(e, stack_info=True, extra={"correo": participante.correo})
+
             messages.error(
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
@@ -83,6 +89,7 @@ def registro(request: HttpRequest):
             request, "registro.html", {"form": form, "participante": participante}
         )
 
+    logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
     return render(request, "registro.html", {"form": form})
 
@@ -92,6 +99,7 @@ def registro(request: HttpRequest):
 def verificar_correo(request: HttpRequest, token: str):
     token_obj = Token.objects.filter(token=token, tipo="VERIFICACION").first()
     if not token_obj:
+        logger.debug(f"Token inválido '{token}'")
         messages.error(request, "El token es inválido.")
         return render(
             request,
@@ -104,6 +112,7 @@ def verificar_correo(request: HttpRequest, token: str):
     )
 
     if not token_obj.valido() and not participante.verificado():
+        logger.debug(f"Token expirado '{token}'", extra={"correo": participante.correo})
         messages.error(
             request,
             "El token de verificación ha expirado.",
@@ -144,7 +153,13 @@ def verificar_correo(request: HttpRequest, token: str):
             )
             email.send(fail_silently=False)
         except Exception as e:
-            pass
+            logger.error(f"Error en el envío del correo de verificación correcta:")
+            logger.error(e, stack_info=True, extra={"correo": participante.correo})
+
+        logger.info(
+            f"Un participante ha verificado su correo.",
+            extra={"correo": participante.correo},
+        )
         messages.success(
             request,
             "Tu correo está verificado! Vuelve cuando quieras para revisar tus detalles!",
@@ -158,6 +173,9 @@ def verificar_correo(request: HttpRequest, token: str):
             },
         )
 
+    logger.debug(
+        f"Un participante ha revisado sus datos.", extra={"correo": participante.correo}
+    )
     messages.info(
         request,
         "Ya habías verificado tu correo. Recibirás más información en breve",
@@ -178,6 +196,7 @@ def confirmar_plaza(request: HttpRequest, token: str):
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
     if not token_obj:
+        logger.debug(f"Token inválido '{token}'")
         messages.error(request, "Token inválido")
         return render(request, "vacio.html", {"titulo": "Confirmar plaza"})
 
@@ -193,9 +212,10 @@ def confirmar_plaza(request: HttpRequest, token: str):
         )
 
     if not token_obj.valido() and not participante.confirmado():
+        logger.debug(f"Token expirado '{token}'", extra={"correo": participante.correo})
         messages.error(
             request,
-            "El token de verificación ha expirado. Ponte en contacto con nosotros para confirmar tu plaza a través de hackudc@gpul.org.",
+            "El token de verificación ha caducado. Ponte en contacto con nosotros para confirmar tu plaza a través de hackudc@gpul.org.",
         )
 
     return render(request, "vacio.html", {"titulo": "Confirmar plaza"})
@@ -207,6 +227,9 @@ def aceptar_plaza(request: HttpRequest, token: str):
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
     if not token_obj.valido():
+        logger.debug(
+            f"Token expirado '{token}'"
+        )  # , extra={"correo": participante.correo})
         messages.error(
             request,
             "Token caducado. No puedes confirmar tu plaza. Si crees que es un error, ponte en contacto a través de hackudc@gpul.org para solucionarlo",
@@ -225,6 +248,10 @@ def aceptar_plaza(request: HttpRequest, token: str):
     token_obj.fecha_uso = ahora
     token_obj.save()
 
+    logger.info(
+        f"Un participante ha aceptado su plaza.",
+        extra={"correo": participante.correo},
+    )
     messages.success(request, "Plaza confirmada.")
     return redirect("confirmar-plaza", token)
 
@@ -235,6 +262,7 @@ def rechazar_plaza(request: HttpRequest, token: str):
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
     if not token_obj:
+        logger.debug(f"Token inválido '{token}'")
         messages.error(request, "Token inválido")
         return render(request, "vacio.html")
 
@@ -252,6 +280,10 @@ def rechazar_plaza(request: HttpRequest, token: str):
     token_obj.fecha_uso = ahora
     token_obj.save()
 
+    logger.info(
+        f"Un participante ha rechazado su plaza.",
+        extra={"correo": participante.correo},
+    )
     messages.success(
         request,
         "Has rechazado tu plaza. Si te arrepientes, contáctanos en hackudc@gpul.org",
@@ -271,6 +303,10 @@ def cvs(request: HttpRequest, archivo: str):
 
     if not os.path.exists(ruta) or not os.path.isfile(ruta):
         raise Http404("File not found")
+
+    logger.info(
+        f"Mostrando el CV {archivo} de un participante a {request.user.username}"
+    )
 
     return FileResponse(open(ruta, "rb"), as_attachment=False)
 
@@ -478,6 +514,7 @@ def presencia_editar(request: HttpRequest, id_presencia: str):
 def info_participante(request: HttpRequest, correo: str):
     persona = Persona.objects.filter(correo=correo).first()
     if not persona:
+        logger.debug("Solicitada info de correo inexistente", extra={"correo": correo})
         messages.error(request, "No existe ninguna persona con ese correo.")
         return render(request, "vacio.html", {"titulo": "Info persona"})
 
@@ -505,4 +542,7 @@ def info_participante(request: HttpRequest, correo: str):
             if "telefono" in form.fields:
                 del form.fields["telefono"]
 
+    logger.info(
+        f"Mostrando info de participante a {request.user}", extra={"correo": correo}
+    )
     return render(request, "verificacion_correcta.html", {"form": form})

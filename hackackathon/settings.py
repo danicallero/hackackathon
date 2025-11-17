@@ -131,6 +131,10 @@ LOGGING = {
             "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
+        "con_correo": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s (%(correo)s)",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
         "django.server": {  # manage.py runserver
             "()": "django.utils.log.ServerFormatter",
             "format": "[{server_time}] {message}",
@@ -213,6 +217,16 @@ LOGGING = {
         },
         "gestion": {
             "level": "DEBUG",
+            "handlers": ["file_debug"],
+        },
+        "gestion.views": {
+            "level": "DEBUG",
+            "formatter": "con_correo",
+            "handlers": ["file_debug"],
+        },
+        "gestion.management.commands.correosconfirmacion": {
+            "level": "DEBUG",
+            "formatter": "con_correo",
             "handlers": ["file_debug"],
         },
     },

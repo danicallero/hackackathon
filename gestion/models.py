@@ -1,6 +1,6 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
-from datetime import timedelta
+import logging
 from uuid import uuid4
 
 from django.contrib import admin
@@ -8,6 +8,9 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
+
+
+logger = logging.getLogger(__name__)
 
 GENEROS = (
     (None, ""),
@@ -48,6 +51,7 @@ def ruta_cv(instance, filename):
 
 def validador_pdf(value):
     if value.file.content_type != "application/pdf":
+        logger.debug(f"Se ha subido un CV inválido (no es un PDF).")
         raise ValidationError("El archivo no es un PDF")
 
 

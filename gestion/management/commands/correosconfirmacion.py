@@ -93,6 +93,8 @@ class Command(BaseCommand):
                 )
                 email.send(fail_silently=False)
             except ConnectionRefusedError:
+            logger.error(f"Error en el envío del correo de confirmación:")
+            logger.error(e, stack_info=True, extra={"correo": participante.correo})
                 self.stdout.write(
                     self.style.ERROR(
                         f"Error al mandar el correo a {participante.correo}"
