@@ -16,6 +16,7 @@ from django.views.decorators.http import require_http_methods
 
 from gestion.forms import (
     EditarPresenciaForm,
+    NormalizacionForm,
     ParticipanteForm,
     PaseForm,
     Registro,
@@ -546,3 +547,35 @@ def info_participante(request: HttpRequest, correo: str):
         f"Mostrando info de participante a {request.user}", extra={"correo": correo}
     )
     return render(request, "verificacion_correcta.html", {"form": form})
+
+
+@require_http_methods(["GET", "POST"])
+def normalizacion(request: HttpRequest, campo: str = None):
+    campos = ("nombre_estudio", "centro_estudio", "ciudad")
+
+    if not campo or not campo in campos:
+        return render(request, "gestion/normalizacion.html", {"campos": campos})
+
+    # order_by necesario (elimina el orden original). Flat da los valores fuera de tuplas.
+    valores = Participante.objects.order_by().values_list(campo, flat=True).distinct()
+
+    if request.method == "GET":
+        return render(
+            request,
+            "gestion/normalizacion.html",
+            {"form": NormalizacionForm(originales=valores), "campo": campo},
+        )
+
+    # POST
+    form = NormalizacionForm(request.POST, originales=valores)
+    if not form.is_valid():
+        return Http404
+
+    data = form.cleaned_data
+
+    if data["originales"] and data["reemplazo"]:
+        Participante.objects.filter(**{f"{campo}__in": data["originales"]}).update(
+            **{campo: data["reemplazo"]}
+        )
+
+    return redirect("normalizacion", campo=campo)

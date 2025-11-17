@@ -136,3 +136,28 @@ class EditarPresenciaForm(forms.ModelForm):
 
         if self.instance and self.instance.salida:
             self.fields["salida"].disabled = True
+
+
+class NormalizacionForm(forms.Form):
+    originales = forms.MultipleChoiceField(
+        label="Valores originales",
+        help_text="Valores a sustituir",
+        widget=forms.CheckboxSelectMultiple(),
+        required=True,
+    )
+    reemplazo = forms.CharField(
+        label="Valor de reemplazo",
+        help_text="Valor insertado en lugar de los originales",
+        required=True,
+    )
+
+    def __init__(self, *args, **kwargs):
+        originales = None
+        if kwargs.get("originales"):
+            originales = kwargs.get("originales")
+            del kwargs["originales"]
+
+        super(NormalizacionForm, self).__init__(*args, **kwargs)
+
+        if originales:
+            self.fields["originales"].choices = zip(originales, originales)

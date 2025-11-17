@@ -39,4 +39,6 @@ urlpatterns = [
         name="presencia-editar",
     ),
     path("gestion/info/<correo>", views.info_participante, name="info-participante"),
+    path("gestion/normalizacion", views.normalizacion, name="normalizacion"),
+    path("gestion/normalizacion/<campo>", views.normalizacion, name="normalizacion"),
 ]

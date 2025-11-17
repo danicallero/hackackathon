@@ -1,0 +1,35 @@
+{% extends 'marco.html' %}
+{% load static %}
+
+{% block title %}Normalización{% endblock %}
+
+{% block content %}
+    <div id="normalizacion">
+        <h1>Normalización de participantes</h1>
+
+        {% if campos %}
+            <ul>
+                {% for campo in campos %}
+                    <li><a href="{% url 'normalizacion' campo=campo %}">{{ campo }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if form %}
+            <a href="{% url 'normalizacion' %}">Volver a la selección de campos</a>
+
+            <br>
+
+            <form action="{% url 'normalizacion' campo=campo %}" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <p style="color: var(--rojo)">
+                    AVISO: Estás modificando la base de datos.
+                    <br>
+                    Comprueba los valores dos veces antes de enviar el formulario.
+                </p>
+                <button type="submit">Realizar modificación</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
