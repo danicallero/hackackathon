@@ -159,16 +159,28 @@ LOGGING = {
             "class": "logging.NullHandler",
         },
         # Custom
-        "file": {
+        "file_debug": {
             "class": "logging.FileHandler",
             "formatter": "standard",
             "filename": LOGFILE_NAME + "debug.log",
+        },
+        "file_info": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "standard",
+            "filename": LOGFILE_NAME + "info.log",
         },
         "file_warning": {
             "level": "WARNING",
             "class": "logging.FileHandler",
             "formatter": "standard",
             "filename": LOGFILE_NAME + "warning.log",
+        },
+        "file_error": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "formatter": "standard",
+            "filename": LOGFILE_NAME + "error.log",
         },
     },
     "loggers": {
@@ -187,21 +199,21 @@ LOGGING = {
             "propagate": False,
         },
         "django.utils.autoreload": {
-            "handlers": ["null"],
+            "handlers": ["console"],
             "propagate": False,
         },
         # Custom
         "": {
-            "level": os.getenv("DJANGO_LOG_LEVEL", "WARNING"),
-            "handlers": ["file_warning"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
+            "handlers": ["file_error", "file_warning", "file_info", "file_debug"],
         },
         "hackackathon": {
             "level": "DEBUG",
-            "handlers": ["file"],
+            "handlers": ["file_debug"],
         },
         "gestion": {
             "level": "DEBUG",
-            "handlers": ["file"],
+            "handlers": ["file_debug"],
         },
     },
 }

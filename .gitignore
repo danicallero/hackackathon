@@ -2,8 +2,6 @@
 .env
 db.sqlite3
 
-*.csv
-
 # Assets
 media/
 static/
@@ -15,5 +13,6 @@ log/*.log
 __pycache__
 
 # Others
+gunicorn.pid
 *.csv
 .idea
