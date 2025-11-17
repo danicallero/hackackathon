@@ -91,7 +91,6 @@ class Patrocinador(PersonaAbstracta):
         return f"{self.empresa}: {self.nombre}"
 
 
-# Create your models here.
 class Persona(PersonaAbstracta):
     dni = models.CharField(max_length=9, unique=True, null=False, verbose_name="DNI")
     genero = models.CharField(

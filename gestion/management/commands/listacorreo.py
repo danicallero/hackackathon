@@ -9,6 +9,7 @@ from gestion.models import Participante
 logger = logging.getLogger(__name__)
 
 
+# Formato de salida:
 # email,name,attributes
 # user1@mail.com,"User One","{""age"": 42, ""planet"": ""Mars""}"
 # user2@mail.com,"User Two","{""age"": 24, ""job"": ""Time Traveller""}"
