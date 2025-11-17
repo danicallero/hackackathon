@@ -9,6 +9,6 @@ python3 manage.py migrate
 python3 manage.py collectstatic --noinput
 
 # Recarga
-pkill gunicorn
+kill $(cat gunicorn.pid)
 sleep 1
 gunicorn
