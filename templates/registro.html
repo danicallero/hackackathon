@@ -32,12 +32,12 @@
     <div class="popup">
         <div class="popup-contenido">
             <h1>✉️ Verifica tu correo</h1>
-            <p>Para finalizar tu solicitud, necesitamos verificar tu correo. Te hemos enviado un mensaje con un enlace.</p>
-            <p>Haz clic en el enlace que te hemos enviado a <span style="color: var(--amarillo)">{{ participante.correo }}</span> para verificar tu correo.</p>
-            <p>Una vez verifiques tu correo, se completará tu solicitud. Cuando te aceptemos, recibirás otro correo con el que podrás confirmar tu plaza.</p>
-            <p><small><i>¿No recibiste ningún correo? Si no recibes el correo, contacta con nosotros en <a href="mailto:hackudc@gpul.org">hackudc.gpul.org</a></i></small>.</p>
+            <p>Te hemos enviado un enlace de verificación a <span style="color: var(--amarillo)">{{ participante.correo }}</span>.</p>
+            <p>Haz clic en el enlace para completar tu solicitud.</p>
+            <p><small><i>¿No lo recibes? Revisa tu carpeta de spam. Si aún no aparece, contacta con nosotros en <a href="mailto:hackudc@gpul.org">hackudc@gpul.org</a></i></small>.</p>
         </div>
     </div>
     {% endif %}
+
 </div>
 {% endblock content %}

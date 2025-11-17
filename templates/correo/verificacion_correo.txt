@@ -3,7 +3,7 @@
 Para completar tu solicitud de registro en el HackUDC 2026, necesitamos verificar tu correo electrónico.
 Para ello, accede aquí: https://{{ host }}/verificar/{{ token }}
 
-Una vez hayas verificado tu correo, recibirás un correo de confirmación.
+Una vez hayas verificado tu correo, recibirás otro correo confirmando que todo está correcto.
 
 Si no consigues completarlo o tienes alguna duda, escríbenos a hackudc@gpul.org.
 

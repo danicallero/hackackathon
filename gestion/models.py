@@ -23,7 +23,8 @@ TALLAS_CAMISETA = (
     ("M", "M"),
     ("L", "L"),
     ("XL", "XL"),
-    ("XXL", "XXL"),
+    ("2XL", "2XL"),
+    ("3XL", "3XL"),
 )
 
 NIVELES_ESTUDIO = (
@@ -52,7 +53,7 @@ def validador_pdf(value):
 
 class PersonaAbstracta(models.Model):
     correo = models.EmailField(max_length=254, unique=True, primary_key=True)
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, verbose_name="Nombre completo")
     notas = models.TextField(null=True, blank=True)
     acreditacion = models.CharField(
         max_length=8,
