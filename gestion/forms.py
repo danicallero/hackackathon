@@ -141,23 +141,23 @@ class EditarPresenciaForm(forms.ModelForm):
 class NormalizacionForm(forms.Form):
     originales = forms.MultipleChoiceField(
         label="Valores originales",
-        help_text="Valores a sustituir",
+        # help_text="Valores a sustituir",
         widget=forms.CheckboxSelectMultiple(),
         required=True,
     )
     reemplazo = forms.CharField(
         label="Valor de reemplazo",
-        help_text="Valor insertado en lugar de los originales",
+        help_text="Valor insertado sustituyendo los originales",
+        # widget=forms.TextInput(attrs={"placeholder": "..."}),
         required=True,
     )
 
     def __init__(self, *args, **kwargs):
-        originales = None
-        if kwargs.get("originales"):
-            originales = kwargs.get("originales")
-            del kwargs["originales"]
+        # Extraer el valor de 'originales' para no ser enviado a super().__init__
+        originales = kwargs.pop("originales", None)
 
         super(NormalizacionForm, self).__init__(*args, **kwargs)
 
         if originales:
+            # El valor de choices debe ser un diccionaario o un iterable de tuplas
             self.fields["originales"].choices = zip(originales, originales)

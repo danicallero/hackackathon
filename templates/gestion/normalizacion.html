@@ -3,33 +3,109 @@
 
 {% block title %}Normalización{% endblock %}
 
+{% block head %}
+    <style>
+        label {
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+
+            align-items: center;
+            justify-content: space-around;
+
+            max-height: 450px;
+        }
+
+        button {
+            background-color: var(--amarillo-hackudc);
+            color: var(--sombra-hackudc);
+            border: none;
+            border-radius: 8px;
+
+            width: 95%;
+            padding: 12px;
+
+            font-size: 1em;
+            cursor: pointer;
+
+            position: relative;
+        }
+
+        div.helptext {
+            font-size: 80%;
+            font-style: italic;
+        }
+
+        fieldset {
+            min-width: 250px;
+            max-height: 400px;
+            overflow-y: scroll;
+
+            border-radius: 8px;
+            border: 2px solid var(--claro);
+            padding: 0.5em 1.5em;
+
+            line-height: 2em;
+            padding-top: 0em;
+        }
+
+        fieldset > div {
+            margin-top: 0;
+        }
+
+        input[type=text] {
+            background-color: var(--claro);
+            border: 2px solid var(--claro);
+            outline: none;
+            color: var(--texto);
+
+            width: 95%;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        input[type=text]:focus {
+            border: 2px solid var(--acento-hackudc);
+            color: var(--acento-hackudc);
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div id="normalizacion">
         <h1>Normalización de participantes</h1>
 
-        {% if campos %}
-            <ul>
-                {% for campo in campos %}
-                    <li><a href="{% url 'normalizacion' campo=campo %}">{{ campo }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <div class="box">
+            {% if campos %}
+                <ul>
+                    {% for campo in campos %}
+                        <li><a href="{% url 'normalizacion' campo=campo %}">{{ campo }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-        {% if form %}
-            <a href="{% url 'normalizacion' %}">Volver a la selección de campos</a>
+            {% if form %}
+                <a href="{% url 'normalizacion' %}">Volver a la selección de campos</a>
 
-            <br>
+                <br>
 
-            <form action="{% url 'normalizacion' campo=campo %}" method="post">
-                {% csrf_token %}
-                {{ form }}
-                <p style="color: var(--rojo)">
-                    AVISO: Estás modificando la base de datos.
-                    <br>
-                    Comprueba los valores dos veces antes de enviar el formulario.
-                </p>
-                <button type="submit">Realizar modificación</button>
-            </form>
-        {% endif %}
+                <form action="{% url 'normalizacion' campo=campo %}" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <div>
+                        <p style="color: var(--rojo)">
+                            AVISO: La modificación de la base de datos es irreversible.
+                            <br>
+                            Comprueba los valores dos veces antes de enviar el formulario.
+                        </p>
+                        <button type="submit">Realizar modificación</button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
