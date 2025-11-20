@@ -3,13 +3,11 @@
 import logging
 from datetime import datetime, timedelta
 
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.core.management import BaseCommand, CommandError
-from django.template.loader import render_to_string
+from django.core.management import BaseCommand
 from django.utils import timezone
 
 from gestion.models import Participante, Token
+from gestion.utils import enviar_correo_confirmacion
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +40,9 @@ class Command(BaseCommand):
                 timezone.get_current_timezone()
             )
         else:
-            fecha_expiracion = timezone.now() + timedelta(days=dias)
+            fecha_expiracion = (timezone.now() + timedelta(days=dias)).replace(
+                hour=23, minute=59, second=59
+            )
 
         if fecha_expiracion < timezone.now():
             raise ValueError("La fecha de expiración es anterior a este instante")
@@ -59,51 +59,30 @@ class Command(BaseCommand):
         )
         if participantes_con_token.exists():
             self.stdout.write(
-                self.style.ERROR(
+                self.style.WARNING(
                     f"{participantes_con_token.count()} participantes ya tenían un token de confirmación"
                 )
             )
 
-        for participante in participantes:
-            token = Token(
-                tipo="CONFIRMACION",
-                persona=participante,
-                fecha_expiracion=fecha_expiracion.astimezone(
-                    timezone.get_default_timezone()
-                ).replace(hour=23, minute=59, second=59),
-            )
-            token.save()
+            # # No enviar correo de confirmación a los usuarios a los que ya se les haya enviado
+            # participantes.exclude(correo__in=participantes_con_token.values("correo"))
 
-            try:
-                params = {
-                    "nombre": participante.nombre,
-                    "token": token.token,
-                    "expiracion": fecha_expiracion,
-                    "host": settings.HOST_REGISTRO,
-                }
-                email = EmailMultiAlternatives(
-                    settings.EMAIL_CONFIRMACION_ASUNTO,
-                    render_to_string("correo/confirmacion_plaza.txt", params),
-                    to=(participante.correo,),
-                    reply_to=("hackudc@gpul.org",),
-                    headers={
-                        "Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"
-                    },
-                )
-                email.attach_alternative(
-                    render_to_string("correo/confirmacion_plaza.html", params),
-                    "text/html",
-                )
-                email.send(fail_silently=False)
-            except ConnectionRefusedError as e:
-                logger.error(f"Error en el envío del correo de confirmación:")
-                logger.error(e, stack_info=True, extra={"correo": participante.correo})
+        for participante in participantes:
+            estado = enviar_correo_confirmacion(participante, fecha_expiracion)
+            if estado != 0:
                 self.stdout.write(
                     self.style.ERROR(
                         f"Error al mandar el correo a {participante.correo}"
                     )
                 )
                 break
+
             self.stdout.write(
-                self.style.SUCCESS(f"Mensaje enviado a {participante.correo}")
+                self.style.HTTP_INFO(f"Mensaje enviado a {participante.correo}")
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Todos los correos de confirmación enviados correctamente"
+                )
             )
