@@ -27,7 +27,9 @@ def enviar_correo_verificacion(persona: Persona) -> int:
         1: Error en el envío
     """
 
-    token = Token.objects.filter(persona=persona, tipo="VERIFICACION").first()
+    token = Token.objects.filter(
+        persona=persona, tipo="VERIFICACION", fecha_uso__isnull=True
+    ).first()
     if not token:
         token = Token(persona=persona, tipo="VERIFICACION")
 
