@@ -57,8 +57,6 @@ def enviar_correo_verificacion(persona: Persona) -> int:
     try:
         email.send(fail_silently=False)
 
-        logger.info(f"Correo de verificación reenviado a {persona.correo}")
-
     except Exception as e:
         persona.motivo_error_correo_verificacion = str(e)[:4096]
         persona.save()
@@ -68,4 +66,5 @@ def enviar_correo_verificacion(persona: Persona) -> int:
 
         return 1
 
+    logger.info("Correo de verificación reenviado", extra={"correo": persona.correo})
     return 0

@@ -132,7 +132,7 @@ LOGGING = {
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
         "con_correo": {
-            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s (%(correo)s)",
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] (%(correo)s) %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
         },
         "django.server": {  # manage.py runserver
@@ -219,7 +219,8 @@ LOGGING = {
             "level": "DEBUG",
             "handlers": ["file_debug"],
         },
-        "gestion.views": {
+        # Custom/con_correo
+        "gestion.utils": {
             "level": "DEBUG",
             "formatter": "con_correo",
             "handlers": ["file_debug"],

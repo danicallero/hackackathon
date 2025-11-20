@@ -88,7 +88,7 @@ def registro(request: HttpRequest):
             {"form": form, "titulo": titulo, "url_form": url, "persona": participante},
         )
 
-    logging.info("Formulario entregado con datos incorrectos.")
+    logger.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
     return render(
         request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
