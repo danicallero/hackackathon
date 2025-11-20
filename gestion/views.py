@@ -35,6 +35,7 @@ from gestion.models import (
     TipoPase,
     Token,
 )
+from gestion.utils import enviar_correo_verificacion
 
 logger = logging.getLogger(__name__)
 
@@ -68,38 +69,9 @@ def registro(request: HttpRequest):
     form = ParticipanteForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
         participante: Participante = form.save()
-        token = Token(
-            tipo="VERIFICACION",
-            persona=participante,
-            fecha_expiracion=(timezone.now() + timedelta(days=7))
-            .astimezone(timezone.get_default_timezone())
-            .replace(hour=23, minute=59, second=59),
-        )
-        token.save()
-        try:
-            params = {
-                "nombre": participante.nombre,
-                "token": token.token,
-                "host": settings.HOST_REGISTRO,
-            }
-            email = EmailMultiAlternatives(
-                settings.EMAIL_VERIFICACION_ASUNTO,
-                render_to_string("correo/verificacion_correo.txt", params),
-                to=(participante.correo,),
-                reply_to=("hackudc@gpul.org",),
-                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-            )
-            email.attach_alternative(
-                render_to_string("correo/verificacion_correo.html", params), "text/html"
-            )
-            email.send(fail_silently=False)
-        except Exception as e:
-            participante.motivo_error_correo_verificacion = str(e)[:4096]
-            participante.save()
 
-            logging.error("Error al enviar el correo de verificación:")
-            logging.error(e, stack_info=True, extra={"correo": participante.correo})
-
+        estado = enviar_correo_verificacion(participante)
+        if estado != 0:
             messages.error(
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
@@ -143,47 +115,18 @@ def registro_mentores(request: HttpRequest):
     form = MentorForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
         mentor: Mentor = form.save()
-        token = Token(
-            tipo="VERIFICACION",
-            persona=mentor,
-            fecha_expiracion=(timezone.now() + timedelta(days=7)).replace(
-                hour=23, minute=59, second=59
-            ),
-        )
-        token.save()
-        try:
-            params = {
-                "nombre": mentor.nombre,
-                "token": token.token,
-                "host": settings.HOST_REGISTRO,
-            }
-            email = EmailMultiAlternatives(
-                settings.EMAIL_VERIFICACION_ASUNTO,
-                render_to_string("correo/verificacion_correo.txt", params),
-                to=(mentor.correo,),
-                reply_to=("hackudc@gpul.org",),
-                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-            )
-            email.attach_alternative(
-                render_to_string("correo/verificacion_correo.html", params), "text/html"
-            )
-            email.send(fail_silently=False)
-        except Exception as e:
-            mentor.motivo_error_correo_verificacion = str(e)[:4096]
-            mentor.save()
 
-            logging.error("Error al enviar el correo de verificación:")
-            logging.error(e, stack_info=True, extra={"correo": mentor.correo})
-
+        estado = enviar_correo_verificacion(mentor)
+        if estado != 0:
             messages.error(
-                request,
-                "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
+                    request,
+                    "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
             return render(
-                request,
-                "registro.html",
-                {"form": form, "titulo": titulo, "url_form": url},
-            )
+                    request,
+                    "registro.html",
+                    {"form": form, "titulo": titulo, "url_form": url},
+                )
 
         return render(
             request,

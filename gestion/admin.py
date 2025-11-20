@@ -17,8 +17,38 @@ from gestion.models import (
     TipoPase,
     Token,
 )
+from gestion.utils import enviar_correo_verificacion
 
 logger = logging.getLogger(__name__)
+
+
+@admin.action(permissions=["reenviar_verificacion"])
+def reenviar_correo_verificacion(modeladmin, request, queryset):
+    if not request.user.has_perm("gestion.reenviar_verificacion"):
+        modeladmin.message_user(
+            request, "No tienes permiso para realizar esta acción", messages.ERROR
+        )
+        return
+
+    if queryset.count() > 1:
+        modeladmin.message_user(
+            request,
+            "Solo puedes reenviar el correo de verificación a un participante de cada vez.",
+            messages.ERROR,
+        )
+
+    estado = enviar_correo_verificacion(queryset.first())
+    if estado != 0:
+        modeladmin.message_user(
+            request,
+            f"Error al enviar el correo de verificación ({queryset.first().correo}).",
+            messages.ERROR,
+        )
+    modeladmin.message_user(
+        request,
+        "Correo de verificación reenviado correctamente.",
+        messages.SUCCESS,
+    )
 
 
 @admin.action(permissions=["aceptar"])
@@ -272,6 +302,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
 
     actions = [
         aceptar_personas,
+        reenviar_correo_verificacion,
     ]
 
     inlines = [
@@ -313,6 +344,9 @@ class ParticipanteAdmin(admin.ModelAdmin):
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_participante")
+
+    def has_reenviar_verificacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_verificacion")
 
 
 class MentorAdmin(admin.ModelAdmin):
