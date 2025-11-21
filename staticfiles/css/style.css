@@ -184,3 +184,20 @@ div.message.message-error {
 .ml-auto { margin-left: auto; }
 .mr-0 { margin-right: 0; }
 .mt-0 { margin-top: 0; }
+
+
+#verificacion-incorrecta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    border: 2px solid var(--borde);
+    border-radius: 0.5em;
+
+    margin: 0 auto;
+    padding: 1em 4em;
+
+    width: fit-content;
+
+    background-color: var(--fondo);
+}

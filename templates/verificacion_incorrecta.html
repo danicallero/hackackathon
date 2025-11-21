@@ -2,17 +2,25 @@
 
 {% block title %}Verificación correo{% endblock title %}
 
+{% block head %}
+    <style>
+    </style>
+{% endblock %}
+
 {% block content %}
-{% include 'logo.html' %}
-<div id="verificacion-correo">
-    <p>
-        No se ha podido verificar tu correo!
-        <br>
-        La verificación es necesaria para poder participar.
-    </p>
-    <p>
-        <a href="mailto:hackudc@gpul.org?subject=[Registro] - Error de verificación: {{ motivo }} ({{ token }})">Avísanos</a>
-        para que lo resolvamos.
-    </p>
-</div>
+    {% include 'logo.html' %}
+    <div id="verificacion-incorrecta">
+        <div>
+            <p>
+                No se ha podido verificar tu correo!
+                <br>
+                La verificación es necesaria para poder participar.
+            </p>
+
+            <p>
+                <a href="mailto:hackudc@gpul.org?subject=[Registro] - Error de verificación: {{ motivo }} ({{ token }})">Avísanos</a>
+                para que lo resolvamos.
+            </p>
+        </div>
+    </div>
 {% endblock content %}

@@ -2,6 +2,7 @@
 
 import logging, os
 from datetime import timedelta
+from uuid import UUID
 
 from django.conf import settings
 from django.contrib import messages
@@ -33,6 +34,15 @@ from gestion.models import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def es_token(token: str) -> bool:
+    try:
+        UUID("{" + token + "}", version=4)
+        return True
+
+    except ValueError:
+        return False
 
 
 @login_not_required
@@ -98,6 +108,17 @@ def registro(request: HttpRequest):
 @login_not_required
 @require_http_methods(["GET"])
 def verificar_correo(request: HttpRequest, token: str):
+    if not es_token(token):
+        logger.debug(f"Token inválido '{token}'")
+        messages.error(
+            request, "El token es inválido. Comprueba que copiaste el enlace completo"
+        )
+        return render(
+            request,
+            "verificacion_incorrecta.html",
+            {"motivo": "Token inválido", "token": token},
+        )
+
     token_obj = Token.objects.filter(token=token, tipo="VERIFICACION").first()
     if not token_obj:
         logger.debug(f"Token inválido '{token}'")
@@ -194,6 +215,17 @@ def verificar_correo(request: HttpRequest, token: str):
 @login_not_required
 @require_http_methods(["GET", "POST"])
 def confirmar_plaza(request: HttpRequest, token: str):
+    # if not es_token(token):
+    #     logger.debug(f"Token inválido '{token}'")
+    #     messages.error(
+    #         request, "El token es inválido. Comprueba que copiaste el enlace completo"
+    #     )
+    #     return render(
+    #         request,
+    #         "verificacion_incorrecta.html",
+    #         {"motivo": "Token inválido", "token": token},
+    #     )
+
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
     if not token_obj:
