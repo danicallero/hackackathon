@@ -238,31 +238,37 @@ class ParticipanteAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         EstadoParticipanteListFilter,
-        "centro_estudio",
         "nivel_estudio",
+        "centro_estudio",
+        "nombre_estudio",
         "ciudad",
+    ]
+
+    search_fields = [
+        "correo",
+        "nombre",
     ]
     actions = [aceptar_participante]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
+        personal_fields = self.fieldsets[0][1]["fields"]
+
         # Permiso para ver el CV
         if not request.user.has_perm("gestion.ver_cv_participante"):
-            personal = self.fieldsets[0][1]["fields"]
-            if "cv" in personal:
+            if "cv" in personal_fields:
                 logger.debug(f"{request.user.username} no tiene permiso para ver CVs.")
-                personal.remove("cv")
+                personal_fields.remove("cv")
 
         # Permiso para ver DNI y teléfono
         if not request.user.has_perm("gestion.ver_dni_telefono_participante"):
-            personal = self.fieldsets[0][1]["fields"]
-            if "dni" in personal:
+            if "dni" in personal_fields:
                 logger.debug(f"{request.user.username} no tiene permiso para ver DNIs.")
-                personal.remove("dni")
-            if "telefono" in personal:
+                personal_fields.remove("dni")
+            if "telefono" in personal_fields:
                 logger.debug(
                     f"{request.user.username} no tiene permiso para ver teléfonos."
                 )
-                personal.remove("telefono")
+                personal_fields.remove("telefono")
 
         return super(ParticipanteAdmin, self).change_view(
             request, object_id, form_url, extra_context
