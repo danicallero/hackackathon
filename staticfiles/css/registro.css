@@ -227,7 +227,7 @@ fieldset>div {
     right: 0.75em;
 }
 
-@media(max-width: 900px) {
+@media(max-width: 1000px) {
     form div {
         max-width: 100%;
         width: 95%;
@@ -235,6 +235,18 @@ fieldset>div {
 
     #registro form {
         margin: 0 1.5em;
+    }
+}
+
+@media(max-width: 650px) {
+    form div {
+        width: 100%;
+    }
+    #registro form {
+        margin: 0;
+    }
+    #titulo {
+        font-size: 2em;
     }
 }
 
