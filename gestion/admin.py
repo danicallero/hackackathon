@@ -299,6 +299,7 @@ class TokenAdmin(admin.ModelAdmin):
         "tipo",
         "fecha_creacion",
         "valido",
+        "usado",
     ]
     list_filter = [
         "tipo",
