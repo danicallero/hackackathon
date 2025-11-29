@@ -1,5 +1,6 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
+import logging
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -9,6 +10,9 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from gestion.models import Participante, Token
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -92,9 +96,9 @@ class Command(BaseCommand):
                     "text/html",
                 )
                 email.send(fail_silently=False)
-            except ConnectionRefusedError:
-            logger.error(f"Error en el envío del correo de confirmación:")
-            logger.error(e, stack_info=True, extra={"correo": participante.correo})
+            except ConnectionRefusedError as e:
+                logger.error(f"Error en el envío del correo de confirmación:")
+                logger.error(e, stack_info=True, extra={"correo": participante.correo})
                 self.stdout.write(
                     self.style.ERROR(
                         f"Error al mandar el correo a {participante.correo}"
