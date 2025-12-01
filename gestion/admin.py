@@ -172,9 +172,9 @@ class ParticipanteAdmin(admin.ModelAdmin):
                     "genero",
                     "fecha_nacimiento",
                     "ciudad",
-                    "telefono",
-                    "dni",
-                    "cv",
+                    # "telefono",
+                    # "dni",
+                    # "cv",
                     "compartir_cv",
                 ]
             },
@@ -254,21 +254,30 @@ class ParticipanteAdmin(admin.ModelAdmin):
         personal_fields = self.fieldsets[0][1]["fields"]
 
         # Permiso para ver el CV
+        if request.user.has_perm("gestion.ver_cv_participante"):
+            if "cv" not in personal_fields:
+                personal_fields.insert(5, "cv")
         if not request.user.has_perm("gestion.ver_cv_participante"):
             if "cv" in personal_fields:
-                logger.debug(f"{request.user.username} no tiene permiso para ver CVs.")
                 personal_fields.remove("cv")
+                logger.debug(f"{request.user.username} no tiene permiso para ver CVs.")
 
         # Permiso para ver DNI y teléfono
+        if request.user.has_perm("gestion.ver_dni_telefono_participante"):
+            if "dni" not in personal_fields:
+                personal_fields.insert(5, "dni")
+            if "telefono" not in personal_fields:
+                personal_fields.insert(5, "telefono")
         if not request.user.has_perm("gestion.ver_dni_telefono_participante"):
             if "dni" in personal_fields:
-                logger.debug(f"{request.user.username} no tiene permiso para ver DNIs.")
                 personal_fields.remove("dni")
+                logger.debug(f"{request.user.username} no tiene permiso para ver DNIs.")
+
             if "telefono" in personal_fields:
+                personal_fields.remove("telefono")
                 logger.debug(
                     f"{request.user.username} no tiene permiso para ver teléfonos."
                 )
-                personal_fields.remove("telefono")
 
         return super(ParticipanteAdmin, self).change_view(
             request, object_id, form_url, extra_context
