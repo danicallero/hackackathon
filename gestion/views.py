@@ -583,6 +583,14 @@ def info_participante(request: HttpRequest, correo: str):
 
 @require_http_methods(["GET", "POST"])
 def normalizacion(request: HttpRequest, campo: str = None):
+    if not request.user.has_perm(
+        "gestion.change_participante"
+    ):
+        messages.error(
+            request, "No tienes permiso para acceder a la página de normalización."
+        )
+        return redirect("gestion")
+
     campos = ("nombre_estudio", "centro_estudio", "ciudad")
 
     if not campo or not campo in campos:

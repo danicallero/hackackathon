@@ -9,6 +9,7 @@
         <li><a href="{% url 'alta' %}">Registro</a></li>
         <li><a href="{% url 'pases' %}">Pases comida</a></li>
         <li><a href="{% url 'presencia' %}">Entrada/Salida</a></li>
+        {% if user.is_staff %}<li><a href="{% url 'normalizacion' %}">Normalización de participantes</a></li>{% endif %}
         <li>Consulta</li>
     </ul>
 </div>
