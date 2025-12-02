@@ -591,7 +591,7 @@ def normalizacion(request: HttpRequest, campo: str = None):
         )
         return redirect("gestion")
 
-    campos = ("nombre_estudio", "centro_estudio", "ciudad")
+    campos = ("nombre_estudio", "centro_estudio", "curso", "ciudad")
 
     if not campo or not campo in campos:
         return render(request, "gestion/normalizacion.html", {"campos": campos})
