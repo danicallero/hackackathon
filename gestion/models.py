@@ -187,6 +187,15 @@ class Persona(PersonaAbstracta):
 
 
 class Mentor(Persona):
+    telefono = models.CharField(max_length=16, null=False, verbose_name="Teléfono")
+    fecha_nacimiento = models.DateField(null=False, verbose_name="Fecha de nacimiento")
+    ciudad = models.CharField(
+        max_length=128, null=True, verbose_name="Ciudad de residencia"
+    )
+    quiere_creditos = models.BooleanField(
+        default=False, verbose_name="Quiere créditos?"
+    )
+    motivacion = models.TextField(null=True, verbose_name="Motivación")
 
     class Meta(Persona.Meta):
         verbose_name = "Mentor"

@@ -56,6 +56,11 @@ erDiagram
 
     MENTOR {
         string correo PK, FK
+        string telefono
+        date fecha_nacimiento
+        string ciudad
+        bool quiere_creditos
+        text motivacion
     }
 
     PARTICIPANTE {
