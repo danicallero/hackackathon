@@ -17,6 +17,7 @@ from django.views.decorators.http import require_http_methods
 
 from gestion.forms import (
     EditarPresenciaForm,
+    MentorForm,
     NormalizacionForm,
     ParticipanteForm,
     PaseForm,
@@ -99,6 +100,64 @@ def registro(request: HttpRequest):
         return render(
             request, "registro.html", {"form": form, "participante": participante}
         )
+
+    logging.info("Formulario entregado con datos incorrectos.")
+    messages.error(request, "Datos incorrectos")
+    return render(request, "registro.html", {"form": form})
+
+
+@login_not_required
+@require_http_methods(["GET", "POST"])
+def registro_mentores(request: HttpRequest):
+    if timezone.now() > settings.FECHA_FIN_REGISTRO:
+        logger.debug("Intento de acceso con el registro cerrado")
+        return render(request, "registro_cerrado.html")
+
+    if request.method == "GET":
+        return render(request, "registro.html", {"form": MentorForm()})
+
+    form = MentorForm(request.POST, request.FILES)
+    if form.is_valid() and request.POST.get("acepta_terminos", False):
+        mentor: Mentor = form.save()
+        token = Token(
+            tipo="VERIFICACION",
+            persona=mentor,
+            fecha_expiracion=(timezone.now() + timedelta(days=7)).replace(
+                hour=23, minute=59, second=59
+            ),
+        )
+        token.save()
+        try:
+            params = {
+                "nombre": mentor.nombre,
+                "token": token.token,
+                "host": settings.HOST_REGISTRO,
+            }
+            email = EmailMultiAlternatives(
+                settings.EMAIL_VERIFICACION_ASUNTO,
+                render_to_string("correo/verificacion_correo.txt", params),
+                to=(mentor.correo,),
+                reply_to=("hackudc@gpul.org",),
+                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
+            )
+            email.attach_alternative(
+                render_to_string("correo/verificacion_correo.html", params), "text/html"
+            )
+            email.send(fail_silently=False)
+        except Exception as e:
+            mentor.motivo_error_correo_verificacion = str(e)[:4096]
+            mentor.save()
+
+            logging.error("Error al enviar el correo de verificación:")
+            logging.error(e, stack_info=True, extra={"correo": mentor.correo})
+
+            messages.error(
+                request,
+                "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
+            )
+            return render(request, "registro.html", {"form": form})
+
+        return render(request, "registro.html", {"form": form, "participante": mentor})
 
     logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
