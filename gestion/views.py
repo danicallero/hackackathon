@@ -53,8 +53,12 @@ def registro(request: HttpRequest):
         logger.debug("Intento de acceso con el registro cerrado")
         return render(request, "registro_cerrado.html")
 
+    titulo = "Regístrate en"
+
     if request.method == "GET":
-        return render(request, "registro.html", {"form": ParticipanteForm()})
+        return render(
+            request, "registro.html", {"form": ParticipanteForm(), "titulo": titulo}
+        )
 
     form = ParticipanteForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
@@ -95,15 +99,17 @@ def registro(request: HttpRequest):
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
-            return render(request, "registro.html", {"form": form})
+            return render(request, "registro.html", {"form": form, "titulo": titulo})
 
         return render(
-            request, "registro.html", {"form": form, "participante": participante}
+            request,
+            "registro.html",
+            {"form": form, "titulo": titulo, "persona": participante},
         )
 
     logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
-    return render(request, "registro.html", {"form": form})
+    return render(request, "registro.html", {"form": form, "titulo": titulo})
 
 
 @login_not_required
@@ -113,8 +119,12 @@ def registro_mentores(request: HttpRequest):
         logger.debug("Intento de acceso con el registro cerrado")
         return render(request, "registro_cerrado.html")
 
+    titulo = "Registro de mentores"
+
     if request.method == "GET":
-        return render(request, "registro.html", {"form": MentorForm()})
+        return render(
+            request, "registro.html", {"form": MentorForm(), "titulo": titulo}
+        )
 
     form = MentorForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
@@ -155,13 +165,17 @@ def registro_mentores(request: HttpRequest):
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
-            return render(request, "registro.html", {"form": form})
+            return render(request, "registro.html", {"form": form, "titulo": titulo})
 
-        return render(request, "registro.html", {"form": form, "participante": mentor})
+        return render(
+            request,
+            "registro.html",
+            {"form": form, "titulo": titulo, "persona": mentor},
+        )
 
     logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
-    return render(request, "registro.html", {"form": form})
+    return render(request, "registro.html", {"form": form, "titulo": titulo})
 
 
 @login_not_required
