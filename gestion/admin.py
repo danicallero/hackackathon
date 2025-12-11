@@ -161,6 +161,28 @@ class TokenValidoListFilter(admin.SimpleListFilter):
                 return queryset.filter(fecha_expiracion__lt=timezone.now())
 
 
+class TokenInline(admin.TabularInline):
+    model = Token
+    show_change_link = True
+    can_delete = False
+    max_num = 4
+    extra = 0
+
+    fields = [
+        "tipo",
+        "fecha_creacion",
+        "fecha_expiracion",
+        "fecha_uso",
+    ]
+
+    readonly_fields = [
+        "tipo",
+        "fecha_creacion",
+        "fecha_expiracion",
+        "fecha_uso",
+    ]
+
+
 class ParticipanteAdmin(admin.ModelAdmin):
     fieldsets = [
         (
@@ -249,6 +271,10 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "nombre",
     ]
     actions = [aceptar_participante]
+
+    inlines = [
+        TokenInline,
+    ]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         personal_fields = self.fieldsets[0][1]["fields"]
