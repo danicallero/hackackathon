@@ -69,9 +69,9 @@ class Command(BaseCommand):
             token = Token(
                 tipo="CONFIRMACION",
                 persona=participante,
-                fecha_expiracion=fecha_expiracion.replace(
-                    hour=23, minute=59, second=59
-                ),
+                fecha_expiracion=fecha_expiracion.astimezone(
+                    timezone.get_default_timezone()
+                ).replace(hour=23, minute=59, second=59),
             )
             token.save()
 
