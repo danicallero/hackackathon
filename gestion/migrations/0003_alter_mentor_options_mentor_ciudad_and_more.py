@@ -11,6 +11,18 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterModelOptions(
+            name="mentor",
+            options={
+                "permissions": [
+                    ("aceptar_mentor", "Aceptar Mentor"),
+                    ("ver_cv_mentor", "Ver el CV de Mentor"),
+                    ("ver_dni_telefono_mentor", "Ver el DNI y el teléfono de Mentor"),
+                ],
+                "verbose_name": "Mentor",
+                "verbose_name_plural": "Mentores",
+            },
+        ),
         migrations.AddField(
             model_name="mentor",
             name="ciudad",

@@ -201,6 +201,15 @@ class Mentor(Persona):
         verbose_name = "Mentor"
         verbose_name_plural = "Mentores"
 
+        permissions = [
+            ("aceptar_mentor", "Aceptar Mentor"),
+            ("ver_cv_mentor", "Ver el CV de Mentor"),
+            (
+                "ver_dni_telefono_mentor",
+                "Ver el DNI y el teléfono de Mentor",
+            ),
+        ]
+
     def __str__(self):
         return f"{self.nombre}"
 
