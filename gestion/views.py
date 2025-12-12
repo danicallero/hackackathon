@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.http import FileResponse, HttpRequest
 from django.shortcuts import Http404, redirect, render
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
@@ -54,10 +55,13 @@ def registro(request: HttpRequest):
         return render(request, "registro_cerrado.html")
 
     titulo = "Regístrate en"
+    url = reverse("registro")
 
     if request.method == "GET":
         return render(
-            request, "registro.html", {"form": ParticipanteForm(), "titulo": titulo}
+            request,
+            "registro.html",
+            {"form": ParticipanteForm(), "titulo": titulo, "url_form": url},
         )
 
     form = ParticipanteForm(request.POST, request.FILES)
@@ -99,17 +103,23 @@ def registro(request: HttpRequest):
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
-            return render(request, "registro.html", {"form": form, "titulo": titulo})
+            return render(
+                request,
+                "registro.html",
+                {"form": form, "titulo": titulo, "url_form": url},
+            )
 
         return render(
             request,
             "registro.html",
-            {"form": form, "titulo": titulo, "persona": participante},
+            {"form": form, "titulo": titulo, "url_form": url, "persona": participante},
         )
 
     logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
-    return render(request, "registro.html", {"form": form, "titulo": titulo})
+    return render(
+        request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
+    )
 
 
 @login_not_required
@@ -120,10 +130,13 @@ def registro_mentores(request: HttpRequest):
         return render(request, "registro_cerrado.html")
 
     titulo = "Registro de mentores"
+    url = reverse("registro-mentores")
 
     if request.method == "GET":
         return render(
-            request, "registro.html", {"form": MentorForm(), "titulo": titulo}
+            request,
+            "registro.html",
+            {"form": MentorForm(), "titulo": titulo, "url_form": url},
         )
 
     form = MentorForm(request.POST, request.FILES)
@@ -165,17 +178,23 @@ def registro_mentores(request: HttpRequest):
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
-            return render(request, "registro.html", {"form": form, "titulo": titulo})
+            return render(
+                request,
+                "registro.html",
+                {"form": form, "titulo": titulo, "url_form": url},
+            )
 
         return render(
             request,
             "registro.html",
-            {"form": form, "titulo": titulo, "persona": mentor},
+            {"form": form, "titulo": titulo, "url_form": url, "persona": mentor},
         )
 
     logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
-    return render(request, "registro.html", {"form": form, "titulo": titulo})
+    return render(
+        request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
+    )
 
 
 @login_not_required
