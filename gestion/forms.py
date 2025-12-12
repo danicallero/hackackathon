@@ -147,6 +147,17 @@ class MentorForm(forms.ModelForm):
         css = {"all": ["css/registro.css"]}
 
 
+class RevisarMentorForm(MentorForm):
+    class Meta(MentorForm.Meta):
+        exclude = [
+            "cv",
+            "notas",
+        ]
+
+    class Media(MentorForm.Media):
+        pass
+
+
 class Registro(forms.Form):
     persona = forms.CharField(label="Correo a registrar", max_length=100)
     acreditacion = forms.CharField(

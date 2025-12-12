@@ -24,6 +24,7 @@ from gestion.forms import (
     PaseForm,
     Registro,
     RevisarParticipanteForm,
+    RevisarMentorForm,
 )
 from gestion.models import (
     Mentor,
@@ -221,12 +222,22 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token inválido", "token": token},
         )
 
-    participante: Participante = Participante.objects.get(
+    persona = Persona.objects.get(
         correo=token_obj.persona.correo
     )
 
-    if not token_obj.valido() and not participante.verificado():
-        logger.debug(f"Token expirado '{token}'", extra={"correo": participante.correo})
+    if hasattr(persona, "participante"):
+        subpersona = persona.participante
+        form = RevisarParticipanteForm
+    elif hasattr(persona, "mentor"):
+        subpersona = persona.mentor
+        form = RevisarMentorForm
+    else:
+        raise ValueError("La persona no es un participante ni un mentor")
+
+
+    if not token_obj.valido() and not persona.verificado():
+        logger.debug(f"Token expirado '{token}'", extra={"correo": persona.correo})
         messages.error(
             request,
             "El token de verificación ha expirado.",
@@ -237,25 +248,25 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token expirado", "token": token},
         )
 
-    if not participante.verificado():
+    if not persona.verificado():
         ahora = timezone.now()
 
-        participante.fecha_verificacion_correo = ahora
-        participante.save()
+        persona.fecha_verificacion_correo = ahora
+        persona.save()
 
         token_obj.fecha_uso = ahora
         token_obj.save()
 
         try:
             params = {
-                "nombre": participante.nombre,
+                "nombre": persona.nombre,
                 "token": token_obj.token,
                 "host": request.get_host(),
             }
             email = EmailMultiAlternatives(
                 settings.EMAIL_VERIFICACION_CORRECTA_ASUNTO,
                 render_to_string("correo/verificacion_correo_correcta.txt", params),
-                to=(participante.correo,),
+                to=(persona.correo,),
                 reply_to=("hackudc@gpul.org",),
                 headers={
                     "Message-ID": f"hackudc-{token_obj.fecha_creacion.timestamp()}"
@@ -268,11 +279,11 @@ def verificar_correo(request: HttpRequest, token: str):
             email.send(fail_silently=False)
         except Exception as e:
             logger.error(f"Error en el envío del correo de verificación correcta:")
-            logger.error(e, stack_info=True, extra={"correo": participante.correo})
+            logger.error(e, stack_info=True, extra={"correo": persona.correo})
 
         logger.info(
-            f"Un participante ha verificado su correo.",
-            extra={"correo": participante.correo},
+            f"Una persona ha verificado su correo.",
+            extra={"correo": persona.correo},
         )
         messages.success(
             request,
@@ -282,13 +293,13 @@ def verificar_correo(request: HttpRequest, token: str):
             request,
             "verificacion_correcta.html",
             {
-                "participante": participante,
-                "form": RevisarParticipanteForm(instance=participante),
+                "persona": persona,
+                "form": RevisarParticipanteForm(instance=persona),
             },
         )
 
     logger.debug(
-        f"Un participante ha revisado sus datos.", extra={"correo": participante.correo}
+        f"Una persona ha revisado sus datos.", extra={"correo": persona.correo}
     )
     messages.info(
         request,
@@ -298,8 +309,7 @@ def verificar_correo(request: HttpRequest, token: str):
         request,
         "verificacion_correcta.html",
         {
-            "participante": participante,
-            "form": RevisarParticipanteForm(instance=participante),
+            "form": form(instance=subpersona),
         },
     )
 
