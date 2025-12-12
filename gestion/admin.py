@@ -3,6 +3,7 @@
 import logging
 
 from django.contrib import admin, messages
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ngettext
 
@@ -346,6 +347,17 @@ class TokenAdmin(admin.ModelAdmin):
         "persona__correo",
         "token",
     ]
+
+    def view_on_site(self, obj):
+        if not obj.fecha_uso:
+            return None
+
+        if obj.tipo == "VERIFICACION":
+            return reverse("verificar-correo", kwargs={"token": obj.token})
+        elif obj.tipo == "CONFIRMACION":
+            return reverse("confirmar-plaza", kwargs={"token": obj.token})
+
+        return None
 
 
 # Register your models here.
