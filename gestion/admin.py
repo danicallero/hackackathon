@@ -269,7 +269,10 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "correo",
         "nombre",
     ]
-    actions = [aceptar_personas]
+
+    actions = [
+        aceptar_personas,
+    ]
 
     inlines = [
         TokenInline,
@@ -381,7 +384,14 @@ class MentorAdmin(admin.ModelAdmin):
         "correo",
         "nombre",
     ]
-    actions = [aceptar_personas]
+
+    actions = [
+        aceptar_personas,
+    ]
+
+    inlines = [
+        TokenInline,
+    ]
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         personal_fields = self.fieldsets[0][1]["fields"]
