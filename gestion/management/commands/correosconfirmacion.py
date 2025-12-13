@@ -11,7 +11,6 @@ from django.utils import timezone
 
 from gestion.models import Participante, Token
 
-
 logger = logging.getLogger(__name__)
 
 

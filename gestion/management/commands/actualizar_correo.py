@@ -1,11 +1,11 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
 import logging
+
 from django.core.management import BaseCommand, CommandError
 from django.core.validators import validate_email
 
-from gestion.models import Persona, Participante, Mentor, Token
-
+from gestion.models import Mentor, Participante, Persona, Token
 
 logger = logging.getLogger(__name__)
 

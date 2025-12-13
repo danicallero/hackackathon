@@ -9,7 +9,6 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 
-
 logger = logging.getLogger(__name__)
 
 GENEROS = (
