@@ -222,9 +222,7 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token inválido", "token": token},
         )
 
-    persona = Persona.objects.get(
-        correo=token_obj.persona.correo
-    )
+    persona = Persona.objects.get(correo=token_obj.persona.correo)
 
     if hasattr(persona, "participante"):
         subpersona = persona.participante
@@ -234,7 +232,6 @@ def verificar_correo(request: HttpRequest, token: str):
         form = RevisarMentorForm
     else:
         raise ValueError("La persona no es un participante ni un mentor")
-
 
     if not token_obj.valido() and not persona.verificado():
         logger.debug(f"Token expirado '{token}'", extra={"correo": persona.correo})
@@ -292,10 +289,7 @@ def verificar_correo(request: HttpRequest, token: str):
         return render(
             request,
             "verificacion_correcta.html",
-            {
-                "persona": persona,
-                "form": RevisarParticipanteForm(instance=persona),
-            },
+            {"persona": persona, "form": form(instance=subpersona)},
         )
 
     logger.debug(
