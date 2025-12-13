@@ -46,11 +46,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="mentor",
-            name="quiere_creditos",
-            field=models.BooleanField(default=False, verbose_name="Quiere créditos?"),
-        ),
-        migrations.AddField(
-            model_name="mentor",
             name="telefono",
             field=models.CharField(default=0, max_length=16, verbose_name="Teléfono"),
             preserve_default=False,

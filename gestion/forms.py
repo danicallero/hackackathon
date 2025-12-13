@@ -111,15 +111,13 @@ class MentorForm(forms.ModelForm):
             "restricciones_alimentarias",
             "detalle_restricciones_alimentarias",
             # Otros
-            "quiere_creditos",
+            "motivacion",
             "cv",
             "compartir_cv",
-            "motivacion",
             "notas",
         ]
 
         labels = {
-            "ciudad": "Ciudad de residencia (usado para estadísticas)",
             "restricciones_alimentarias": "Restricciones alimentarias",
             "curso": "Curso (si aplica)",
             "quiere_creditos": "¿Quieres solicitar créditos?",

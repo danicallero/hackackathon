@@ -327,7 +327,6 @@ class MentorAdmin(admin.ModelAdmin):
                     # "dni",
                     # "cv",
                     "compartir_cv",
-                    "quiere_creditos",
                 ]
             },
         ),
@@ -366,7 +365,6 @@ class MentorAdmin(admin.ModelAdmin):
         "correo",
         "nombre",
         "ciudad",
-        "quiere_creditos",
         "fecha_registro",
         "verificado",
         "aceptado",

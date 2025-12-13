@@ -192,9 +192,6 @@ class Mentor(Persona):
     ciudad = models.CharField(
         max_length=128, null=True, verbose_name="Ciudad de residencia"
     )
-    quiere_creditos = models.BooleanField(
-        default=False, verbose_name="Quiere créditos?"
-    )
     motivacion = models.TextField(null=True, verbose_name="Motivación")
 
     class Meta(Persona.Meta):
