@@ -146,9 +146,9 @@ def registro_mentores(request: HttpRequest):
         token = Token(
             tipo="VERIFICACION",
             persona=mentor,
-            fecha_expiracion=(timezone.now() + timedelta(days=7)).replace(
-                hour=23, minute=59, second=59
-            ),
+            fecha_expiracion=(timezone.now() + timedelta(days=7))
+            .astimezone(timezone.get_default_timezone())
+            .replace(hour=23, minute=59, second=59),
         )
         token.save()
         try:
