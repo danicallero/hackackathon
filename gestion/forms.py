@@ -3,7 +3,13 @@
 from django import forms
 from django.utils import timezone
 
-from gestion.models import Participante, Presencia, RestriccionAlimentaria, TipoPase
+from gestion.models import (
+    Mentor,
+    Participante,
+    Presencia,
+    RestriccionAlimentaria,
+    TipoPase,
+)
 
 
 class ParticipanteForm(forms.ModelForm):
@@ -87,6 +93,67 @@ class RevisarParticipanteForm(ParticipanteForm):
         #     if field_name not in self.Meta.exclude:
         #         field = self.fields[field_name]
         #         field.disabled = True
+
+
+class MentorForm(forms.ModelForm):
+    class Meta:
+        model = Mentor
+        fields = [
+            "nombre",
+            "dni",
+            "correo",
+            "telefono",
+            "fecha_nacimiento",
+            "genero",
+            "talla_camiseta",
+            "ciudad",
+            # Restricciones alimentarias
+            "restricciones_alimentarias",
+            "detalle_restricciones_alimentarias",
+            # Otros
+            "motivacion",
+            "cv",
+            "compartir_cv",
+            "notas",
+        ]
+
+        labels = {
+            "restricciones_alimentarias": "Restricciones alimentarias",
+            "curso": "Curso (si aplica)",
+            "quiere_creditos": "¿Quieres solicitar créditos?",
+            "compartir_cv": "¿Autorizas compartir tu CV con los patrocinadores?",
+            "motivacion": "Motivación para participar en el HackUDC",
+        }
+
+        help_texts = {
+            "cv": "Currículum vitae en formato PDF. Lo usaremos para conocerte mejor y lo haremos llegar a nuestros patrocinadores si lo deseas.",
+            "motivacion": "Se usará conjuntamente con el CV en caso de tener más solicitudes que plazas para aceptar a quienes más vayan a aprovechar el evento.",
+            "notas": "Otros datos que consideres relevantes.",
+            "quiere_creditos": "Para estudiantes de la UDC",
+        }
+
+        widgets = {
+            "fecha_nacimiento": forms.DateInput(
+                attrs={"type": "date"}, format="%Y-%m-%d"
+            ),
+            "restricciones_alimentarias": forms.CheckboxSelectMultiple(),
+            "notas": forms.Textarea(attrs={"rows": 2}),
+            "cv": forms.ClearableFileInput(attrs={"accept": ".pdf"}),
+        }
+
+    class Media:
+        css = {"all": ["css/registro.css"]}
+
+
+class RevisarMentorForm(MentorForm):
+    class Meta(MentorForm.Meta):
+        exclude = [
+            "cv",
+            "notas",
+        ]
+
+    class Media(MentorForm.Media):
+        pass
 
 
 class Registro(forms.Form):

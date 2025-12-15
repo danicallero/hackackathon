@@ -187,10 +187,25 @@ class Persona(PersonaAbstracta):
 
 
 class Mentor(Persona):
+    telefono = models.CharField(max_length=16, null=False, verbose_name="Teléfono")
+    fecha_nacimiento = models.DateField(null=False, verbose_name="Fecha de nacimiento")
+    ciudad = models.CharField(
+        max_length=128, null=True, verbose_name="Ciudad de residencia"
+    )
+    motivacion = models.TextField(null=True, verbose_name="Motivación")
 
     class Meta(Persona.Meta):
         verbose_name = "Mentor"
         verbose_name_plural = "Mentores"
+
+        permissions = [
+            ("aceptar_mentor", "Aceptar Mentor"),
+            ("ver_cv_mentor", "Ver el CV de Mentor"),
+            (
+                "ver_dni_telefono_mentor",
+                "Ver el DNI y el teléfono de Mentor",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.nombre}"

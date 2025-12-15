@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 @admin.action(permissions=["aceptar"])
-def aceptar_participante(modeladmin, request, queryset):
+def aceptar_personas(modeladmin, request, queryset):
     if not request.user.has_perm("gestion.aceptar_participante"):
         modeladmin.message_user(
             request, "No tienes permiso para realizar esta acción", messages.ERROR
@@ -38,15 +38,15 @@ def aceptar_participante(modeladmin, request, queryset):
     )
 
     logger.info(
-        f"Acción 'aceptar_participante' ejecutada por {request.user.username}: {actualizados} aceptados. {no_verificados.count()} no verificados. {ya_aceptados} ya aceptados"
+        f"Acción 'aceptar_personas' ejecutada por {request.user.username}: {actualizados} aceptados. {no_verificados.count()} no verificados. {ya_aceptados} ya aceptados"
     )
 
     if no_verificados.exists():
         modeladmin.message_user(
             request,
             ngettext(
-                "%d participante no tiene el correo verificado y no se ha podido aceptar.",
-                "%d participantes no tienen el correo verificado y no se han podido aceptar.",
+                "%d persona no tiene el correo verificado y no se ha podido aceptar.",
+                "%d personas no tienen el correo verificado y no se han podido aceptar.",
                 no_verificados.count(),
             )
             % no_verificados.count(),
@@ -57,8 +57,8 @@ def aceptar_participante(modeladmin, request, queryset):
         modeladmin.message_user(
             request,
             ngettext(
-                "%d participante ya estaba aceptado.",
-                "%d participantes ya estaban aceptados.",
+                "%d persona ya estaba aceptada.",
+                "%d personas ya estaban aceptadas.",
                 ya_aceptados,
             )
             % ya_aceptados,
@@ -67,17 +67,15 @@ def aceptar_participante(modeladmin, request, queryset):
     if actualizados:
         modeladmin.message_user(
             request,
-            ngettext(
-                "%d participante aceptado.", "%d participantes aceptados.", actualizados
-            )
+            ngettext("%d persona aceptada.", "%d personas aceptadas.", actualizados)
             % actualizados,
             messages.SUCCESS,
         )
     else:
-        modeladmin.message_user(request, "No se ha aceptado a ningún participante.")
+        modeladmin.message_user(request, "No se ha aceptado a ninguna persona.")
 
 
-class EstadoParticipanteListFilter(admin.SimpleListFilter):
+class EstadoPersonaListFilter(admin.SimpleListFilter):
     title = "Estado"
     parameter_name = "estado"
 
@@ -260,7 +258,7 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "error_verificacion",
     ]
     list_filter = [
-        EstadoParticipanteListFilter,
+        EstadoPersonaListFilter,
         "nivel_estudio",
         "centro_estudio",
         "nombre_estudio",
@@ -271,7 +269,10 @@ class ParticipanteAdmin(admin.ModelAdmin):
         "correo",
         "nombre",
     ]
-    actions = [aceptar_participante]
+
+    actions = [
+        aceptar_personas,
+    ]
 
     inlines = [
         TokenInline,
@@ -312,6 +313,121 @@ class ParticipanteAdmin(admin.ModelAdmin):
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_participante")
+
+
+class MentorAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (
+            "Personal",
+            {
+                "fields": [
+                    "nombre",
+                    "correo",
+                    "genero",
+                    "fecha_nacimiento",
+                    "ciudad",
+                    # "telefono",
+                    # "dni",
+                    # "cv",
+                    "compartir_cv",
+                ]
+            },
+        ),
+        (
+            "Evento",
+            {
+                "fields": [
+                    "acreditacion",
+                    "restricciones_alimentarias",
+                    "detalle_restricciones_alimentarias",
+                    "talla_camiseta",
+                    "fecha_registro",
+                    "fecha_verificacion_correo",
+                    "fecha_aceptacion",
+                    "fecha_confirmacion_plaza",
+                    "fecha_rechazo_plaza",
+                    "motivo_error_correo_verificacion",
+                    "motivacion",
+                    "notas",
+                ]
+            },
+        ),
+    ]
+
+    readonly_fields = [
+        "cv",
+        "fecha_registro",
+        "fecha_verificacion_correo",
+        "fecha_aceptacion",
+        "fecha_confirmacion_plaza",
+        "fecha_rechazo_plaza",
+        "motivo_error_correo_verificacion",
+    ]
+
+    list_display = [
+        "correo",
+        "nombre",
+        "ciudad",
+        "fecha_registro",
+        "verificado",
+        "aceptado",
+        "confirmado",
+        "rechazo",
+        "error_verificacion",
+    ]
+    list_filter = [
+        EstadoPersonaListFilter,
+        "ciudad",
+    ]
+
+    search_fields = [
+        "correo",
+        "nombre",
+    ]
+
+    actions = [
+        aceptar_personas,
+    ]
+
+    inlines = [
+        TokenInline,
+    ]
+
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        personal_fields = self.fieldsets[0][1]["fields"]
+
+        # Permiso para ver el CV
+        if request.user.has_perm("gestion.ver_cv_mentor"):
+            if "cv" not in personal_fields:
+                personal_fields.insert(5, "cv")
+        if not request.user.has_perm("gestion.ver_cv_mentor"):
+            if "cv" in personal_fields:
+                personal_fields.remove("cv")
+                logger.debug(f"{request.user.username} no tiene permiso para ver CVs.")
+
+        # Permiso para ver DNI y teléfono
+        if request.user.has_perm("gestion.ver_dni_telefono_mentor"):
+            if "dni" not in personal_fields:
+                personal_fields.insert(5, "dni")
+            if "telefono" not in personal_fields:
+                personal_fields.insert(5, "telefono")
+        if not request.user.has_perm("gestion.ver_dni_telefono_mentor"):
+            if "dni" in personal_fields:
+                personal_fields.remove("dni")
+                logger.debug(f"{request.user.username} no tiene permiso para ver DNIs.")
+
+            if "telefono" in personal_fields:
+                personal_fields.remove("telefono")
+                logger.debug(
+                    f"{request.user.username} no tiene permiso para ver teléfonos."
+                )
+
+        return super(MentorAdmin, self).change_view(
+            request, object_id, form_url, extra_context
+        )
+
+    def has_aceptar_permission(self, request):
+        return request.user.has_perm("gestion.aceptar_mentor")
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -362,7 +478,7 @@ class TokenAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Patrocinador)
-admin.site.register(Mentor)
+admin.site.register(Mentor, MentorAdmin)
 admin.site.register(Participante, ParticipanteAdmin)
 admin.site.register(RestriccionAlimentaria)
 admin.site.register(Presencia)

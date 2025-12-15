@@ -6,11 +6,11 @@
 
 {% block content %}
 <div id="registro">
-    {% include 'logo.html' with titulo="Regístrate en" %}
+    {% include 'logo.html' %}
 
     <br>
 
-    <form action="{% url 'registro' %}" method="post" enctype="multipart/form-data">
+    <form action="{{ url_form }}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
 
@@ -28,11 +28,11 @@
         <p>Al enviar aceptas la <a href="https://hackudc.gpul.org/es/privacidad/">política de privacidad</a></p>
     </form>
 
-    {% if participante %}
+    {% if persona %}
     <div class="popup">
         <div class="popup-contenido">
             <h1>✉️ Verifica tu correo</h1>
-            <p>Te hemos enviado un enlace de verificación a <span style="color: var(--amarillo)">{{ participante.correo }}</span>.</p>
+            <p>Te hemos enviado un enlace de verificación a <span style="color: var(--amarillo)">{{ persona.correo }}</span>.</p>
             <p>Haz clic en el enlace para completar tu solicitud.</p>
             <p><small><i>¿No lo recibes? Revisa tu carpeta de spam. Si aún no aparece, contacta con nosotros en <a href="mailto:hackudc@gpul.org">hackudc@gpul.org</a></i></small>.</p>
         </div>
