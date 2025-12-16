@@ -460,6 +460,8 @@ class MentorAdmin(admin.ModelAdmin):
 
     actions = [
         aceptar_personas,
+        reenviar_correo_verificacion,
+        reenviar_correo_confirmacion,
     ]
 
     inlines = [
@@ -501,6 +503,12 @@ class MentorAdmin(admin.ModelAdmin):
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_mentor")
+
+    def has_reenviar_verificacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_verificacion")
+
+    def has_reenviar_confirmacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_confirmacion")
 
 
 class TokenAdmin(admin.ModelAdmin):
