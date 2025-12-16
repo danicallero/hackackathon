@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def enviar_correo_verificacion(
-    persona: Persona, fecha_expiracion: datetime | None
+    persona: Persona, fecha_expiracion: datetime | None = None
 ) -> int:
     """
     Envía la verificación de correo a la Persona indicada.
@@ -79,7 +79,7 @@ def enviar_correo_verificacion(
 
 
 def enviar_correo_confirmacion(
-    persona: Persona, fecha_expiracion: datetime | None
+    persona: Persona, fecha_expiracion: datetime | None = None
 ) -> int:
     """
     Envía la confirmación de plaza a la Persona indicada.
