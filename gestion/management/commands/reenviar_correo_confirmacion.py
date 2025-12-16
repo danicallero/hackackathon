@@ -17,38 +17,40 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("correo", help="Correo de la Persona")
-        grupo_fecha_expiracion = parser.add_mutually_exclusive_group()
-        grupo_fecha_expiracion.add_argument(
-            "-d",
-            "--dias",
-            help="Días de duración del token. (default=14)",
-            type=int,
-            default=14,
-        )
-        grupo_fecha_expiracion.add_argument(
-            "-e",
-            "--expiracion",
-            help="Fecha de expiración para todos los tokens. Formato ISO 8601.",
-        )
+        # grupo_fecha_expiracion = parser.add_mutually_exclusive_group()
+        # grupo_fecha_expiracion.add_argument(
+        #     "-d",
+        #     "--dias",
+        #     help="Días de duración del token. (default=14)",
+        #     type=int,
+        #     default=14,
+        # )
+        # grupo_fecha_expiracion.add_argument(
+        #     "-e",
+        #     "--expiracion",
+        #     help="Fecha de expiración para todos los tokens. Formato ISO 8601.",
+        # )
 
     def handle(self, *args, **options):
         correo = options.get("correo")
 
         persona = Persona.objects.get(correo=correo)
 
-        dias = options.get("dias")
-        expiracion = options.get("expiracion")
-        if expiracion:
-            fecha_expiracion = datetime.fromisoformat(expiracion).astimezone(
-                timezone.get_current_timezone()
-            )
-        else:
-            fecha_expiracion = (timezone.now() + timedelta(days=dias)).replace(
-                hour=23, minute=59, second=59
-            )
-
-        if fecha_expiracion < timezone.now():
-            raise ValueError("La fecha de expiración es anterior a este instante")
+        # dias = options.get("dias")
+        # expiracion = options.get("expiracion")
+        # if expiracion:
+        #     fecha_expiracion = datetime.fromisoformat(expiracion).astimezone(
+        #         timezone.get_current_timezone()
+        #     )
+        # else:
+        #     fecha_expiracion = (timezone.now() + timedelta(days=dias)).astimezone(
+        #         timezone.get_current_timezone()
+        #     ).replace(
+        #         hour=23, minute=59, second=59
+        #     )
+        #
+        # if fecha_expiracion < timezone.now():
+        #     raise ValueError("La fecha de expiración es anterior a este instante")
 
         estado = enviar_correo_confirmacion(persona)
         if estado != 0:

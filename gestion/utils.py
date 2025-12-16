@@ -102,7 +102,7 @@ def enviar_correo_confirmacion(
 
     if not fecha_expiracion:
         fecha_expiracion = (
-            (timezone.now() + timedelta(days=7))
+            (timezone.now() + timedelta(days=14))
             .astimezone(timezone.get_default_timezone())
             .replace(hour=23, minute=59, second=59)
         )
