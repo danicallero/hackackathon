@@ -176,6 +176,7 @@ def verificar_correo(request: HttpRequest, token: str):
     else:
         raise ValueError("La persona no es un participante ni un mentor")
 
+    # No permitir verificar el correo si el Token ha expirado
     if not token_obj.valido() and not persona.verificado():
         logger.debug(f"Token expirado '{token}'", extra={"correo": persona.correo})
         messages.error(
@@ -188,14 +189,17 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token expirado", "token": token},
         )
 
-    if not persona.verificado():
-        ahora = timezone.now()
+    ahora = timezone.now()
 
-        persona.fecha_verificacion_correo = ahora
-        persona.save()
-
+    # Actualizar la fecha de uso del Token aunque la Persona ya esté verificada con otro Token
+    if not token.usado():
         token_obj.fecha_uso = ahora
         token_obj.save()
+
+    # Verificar a la Persona la primera vez que usa un Token de verificación
+    if not persona.verificado():
+        persona.fecha_verificacion_correo = ahora
+        persona.save()
 
         try:
             params = {
