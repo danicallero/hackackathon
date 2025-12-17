@@ -4,7 +4,7 @@ import logging
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 
@@ -51,19 +51,16 @@ def enviar_correo_verificacion(
         "token": token.token,
         "host": settings.HOST_REGISTRO,
     }
-    email = EmailMultiAlternatives(
-        settings.EMAIL_VERIFICACION_ASUNTO,
-        render_to_string("correo/verificacion_correo.txt", params),
-        to=(persona.correo,),
-        reply_to=("hackudc@gpul.org",),
-        headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-    )
-    email.attach_alternative(
-        render_to_string("correo/verificacion_correo.html", params), "text/html"
-    )
 
     try:
-        email.send(fail_silently=False)
+        send_mail(
+            subject=settings.EMAIL_VERIFICACION_ASUNTO,
+            message=render_to_string("correo/verificacion_correo.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(persona.correo,),
+            html_message=render_to_string("correo/verificacion_correo.html", params),
+            fail_silently=False,
+        )
 
     except Exception as e:
         persona.motivo_error_correo_verificacion = str(e)[:4096]
@@ -116,19 +113,16 @@ def enviar_correo_confirmacion(
         "expiracion": fecha_expiracion,
         "host": settings.HOST_REGISTRO,
     }
-    email = EmailMultiAlternatives(
-        settings.EMAIL_CONFIRMACION_ASUNTO,
-        render_to_string("correo/confirmacion_plaza.txt", params),
-        to=(persona.correo,),
-        reply_to=("hackudc@gpul.org",),
-        headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-    )
-    email.attach_alternative(
-        render_to_string("correo/confirmacion_plaza.html", params),
-        "text/html",
-    )
+
     try:
-        email.send(fail_silently=False)
+        send_mail(
+            subject=settings.EMAIL_CONFIRMACION_ASUNTO,
+            message=render_to_string("correo/confirmacion_plaza.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(persona.correo,),
+            html_message=render_to_string("correo/confirmacion_plaza.html", params),
+            fail_silently=False,
+        )
     except ConnectionRefusedError as e:
         logger.error(f"Error en el envío del correo de confirmación:")
         logger.error(e, stack_info=True, extra={"correo": persona.correo})
