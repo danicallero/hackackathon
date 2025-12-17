@@ -12,7 +12,10 @@ log/*.log
 # Python
 __pycache__
 
+# Editores
+.vscode
+.idea
+
 # Others
 gunicorn.pid
 *.csv
-.idea
