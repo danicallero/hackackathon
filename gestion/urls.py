@@ -6,8 +6,8 @@ from django.urls import path
 from gestion import views
 
 urlpatterns = [
-    path("", views.registro, name="registro"),
-    path("mentores", views.registro_mentores, name="registro-mentores"),
+    path("", views.registro, {"subclase": "participante"}, name="registro"),
+    path("mentores", views.registro, {"subclase": "mentor"}, name="registro-mentores"),
     path("media/cv/<archivo>", views.cvs),
     path("verificar/<token>", views.verificar_correo, name="verificar-correo"),
     path("confirmar/<token>", views.confirmar_plaza, name="confirmar-plaza"),

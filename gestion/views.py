@@ -51,26 +51,36 @@ def es_token(token: str) -> bool:
 
 @login_not_required
 @require_http_methods(["GET", "POST"])
-def registro(request: HttpRequest):
+def registro(request: HttpRequest, *args, **kwargs):
     if timezone.now() > settings.FECHA_FIN_REGISTRO:
         logger.debug("Intento de acceso con el registro cerrado")
         return render(request, "registro_cerrado.html")
 
-    titulo = "Regístrate en"
-    url = reverse("registro")
+    if kwargs.get("subclase") == "participante":
+        titulo = "Regístrate para participar en"
+        url = reverse("registro")
+        subclase = Participante
+        subform = ParticipanteForm
+    elif kwargs.get("subclase") == "mentor":
+        titulo = "Regístrate como mentor en"
+        url = reverse("registro-mentores")
+        subclase = Mentor
+        subform = MentorForm
+    else:
+        raise ValueError("El valor de subclase debe ser 'participante' o 'mentor'.")
 
     if request.method == "GET":
         return render(
             request,
             "registro.html",
-            {"form": ParticipanteForm(), "titulo": titulo, "url_form": url},
+            {"form": subform(), "titulo": titulo, "url_form": url},
         )
 
-    form = ParticipanteForm(request.POST, request.FILES)
+    form = subform(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
-        participante: Participante = form.save()
+        persona: subclase = form.save()
 
-        estado = enviar_correo_verificacion(participante)
+        estado = enviar_correo_verificacion(persona)
         if estado != 0:
             messages.error(
                 request,
@@ -85,56 +95,10 @@ def registro(request: HttpRequest):
         return render(
             request,
             "registro.html",
-            {"form": form, "titulo": titulo, "url_form": url, "persona": participante},
+            {"form": form, "titulo": titulo, "url_form": url, "persona": persona},
         )
 
     logger.info("Formulario entregado con datos incorrectos.")
-    messages.error(request, "Datos incorrectos")
-    return render(
-        request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
-    )
-
-
-@login_not_required
-@require_http_methods(["GET", "POST"])
-def registro_mentores(request: HttpRequest):
-    if timezone.now() > settings.FECHA_FIN_REGISTRO:
-        logger.debug("Intento de acceso con el registro cerrado")
-        return render(request, "registro_cerrado.html")
-
-    titulo = "Registro de mentores"
-    url = reverse("registro-mentores")
-
-    if request.method == "GET":
-        return render(
-            request,
-            "registro.html",
-            {"form": MentorForm(), "titulo": titulo, "url_form": url},
-        )
-
-    form = MentorForm(request.POST, request.FILES)
-    if form.is_valid() and request.POST.get("acepta_terminos", False):
-        mentor: Mentor = form.save()
-
-        estado = enviar_correo_verificacion(mentor)
-        if estado != 0:
-            messages.error(
-                    request,
-                    "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
-            )
-            return render(
-                    request,
-                    "registro.html",
-                    {"form": form, "titulo": titulo, "url_form": url},
-                )
-
-        return render(
-            request,
-            "registro.html",
-            {"form": form, "titulo": titulo, "url_form": url, "persona": mentor},
-        )
-
-    logging.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
     return render(
         request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
