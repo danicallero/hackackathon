@@ -1,0 +1,11 @@
+[tool.black]
+color = true
+safe = true
+extend-exclude = "( ^/manage.py | .+/migrations)"
+
+[tool.isort]
+skip_glob = [ "*/migrations" ]
+profile = "black"
+multi_line_output=3
+combine_as_imports=true
+combine_straight_imports=true
