@@ -5,7 +5,7 @@ import logging
 from django.core.management import BaseCommand, CommandError
 from django.core.validators import validate_email
 
-from gestion.models import Mentor, Participante, Persona, Token
+from gestion.models import Mentor, Participante, Persona, Token, RestriccionAlimentaria
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +47,9 @@ class Command(BaseCommand):
         Token.objects.filter(persona=Persona.objects.get(correo=original)).update(
             persona=persona
         )
+
+        # Actualizar restricciones alimentarias asociadas
+        RestriccionAlimentaria.objects.filter(persona=Persona.objects.get(correo=original)).update(persona=persona)
 
         # Eliminar la persona antigua
         Persona.objects.get(correo=original).delete()

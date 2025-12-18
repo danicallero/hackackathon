@@ -32,6 +32,8 @@ if [ "$RESPUESTA_LOWER" = "y" ]; then
   SELECT 'Participantes actualizados: ' || changes();
   UPDATE OR ROLLBACK gestion_token SET persona_id='$CORREO_NUEVO' where persona_id='$CORREO_ORIGINAL';
   SELECT 'Tokens actualizados: ' || changes();
+  UPDATE OR ROLLBACK gestion_persona_restricciones_alimentarias SET persona_id='$CORREO_NUEVO' where persona_id='$CORREO_ORIGINAL';
+  SELECT 'Restricciones alimentarias actualizadas: ' || changes();
   COMMIT;
   " | sqlite3 -ifexists db.sqlite3
 elif [ -z "$RESPUESTA" ] || [ "$RESPUESTA_LOWER" = "n" ]; then
