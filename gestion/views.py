@@ -23,8 +23,8 @@ from gestion.forms import (
     ParticipanteForm,
     PaseForm,
     Registro,
-    RevisarParticipanteForm,
     RevisarMentorForm,
+    RevisarParticipanteForm,
 )
 from gestion.models import (
     Mentor,
@@ -35,6 +35,7 @@ from gestion.models import (
     TipoPase,
     Token,
 )
+from gestion.utils import enviar_correo_verificacion
 
 logger = logging.getLogger(__name__)
 
@@ -68,38 +69,9 @@ def registro(request: HttpRequest):
     form = ParticipanteForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
         participante: Participante = form.save()
-        token = Token(
-            tipo="VERIFICACION",
-            persona=participante,
-            fecha_expiracion=(timezone.now() + timedelta(days=7))
-            .astimezone(timezone.get_default_timezone())
-            .replace(hour=23, minute=59, second=59),
-        )
-        token.save()
-        try:
-            params = {
-                "nombre": participante.nombre,
-                "token": token.token,
-                "host": settings.HOST_REGISTRO,
-            }
-            email = EmailMultiAlternatives(
-                settings.EMAIL_VERIFICACION_ASUNTO,
-                render_to_string("correo/verificacion_correo.txt", params),
-                to=(participante.correo,),
-                reply_to=("hackudc@gpul.org",),
-                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-            )
-            email.attach_alternative(
-                render_to_string("correo/verificacion_correo.html", params), "text/html"
-            )
-            email.send(fail_silently=False)
-        except Exception as e:
-            participante.motivo_error_correo_verificacion = str(e)[:4096]
-            participante.save()
 
-            logging.error("Error al enviar el correo de verificación:")
-            logging.error(e, stack_info=True, extra={"correo": participante.correo})
-
+        estado = enviar_correo_verificacion(participante)
+        if estado != 0:
             messages.error(
                 request,
                 "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
@@ -116,7 +88,7 @@ def registro(request: HttpRequest):
             {"form": form, "titulo": titulo, "url_form": url, "persona": participante},
         )
 
-    logging.info("Formulario entregado con datos incorrectos.")
+    logger.info("Formulario entregado con datos incorrectos.")
     messages.error(request, "Datos incorrectos")
     return render(
         request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
@@ -143,47 +115,18 @@ def registro_mentores(request: HttpRequest):
     form = MentorForm(request.POST, request.FILES)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
         mentor: Mentor = form.save()
-        token = Token(
-            tipo="VERIFICACION",
-            persona=mentor,
-            fecha_expiracion=(timezone.now() + timedelta(days=7))
-            .astimezone(timezone.get_default_timezone())
-            .replace(hour=23, minute=59, second=59),
-        )
-        token.save()
-        try:
-            params = {
-                "nombre": mentor.nombre,
-                "token": token.token,
-                "host": settings.HOST_REGISTRO,
-            }
-            email = EmailMultiAlternatives(
-                settings.EMAIL_VERIFICACION_ASUNTO,
-                render_to_string("correo/verificacion_correo.txt", params),
-                to=(mentor.correo,),
-                reply_to=("hackudc@gpul.org",),
-                headers={"Message-ID": f"hackudc-{token.fecha_creacion.timestamp()}"},
-            )
-            email.attach_alternative(
-                render_to_string("correo/verificacion_correo.html", params), "text/html"
-            )
-            email.send(fail_silently=False)
-        except Exception as e:
-            mentor.motivo_error_correo_verificacion = str(e)[:4096]
-            mentor.save()
 
-            logging.error("Error al enviar el correo de verificación:")
-            logging.error(e, stack_info=True, extra={"correo": mentor.correo})
-
+        estado = enviar_correo_verificacion(mentor)
+        if estado != 0:
             messages.error(
-                request,
-                "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
+                    request,
+                    "Error al enviar el correo de verificación. Contacta con nosotros a través de hackudc@gpul.org para resolverlo.",
             )
             return render(
-                request,
-                "registro.html",
-                {"form": form, "titulo": titulo, "url_form": url},
-            )
+                    request,
+                    "registro.html",
+                    {"form": form, "titulo": titulo, "url_form": url},
+                )
 
         return render(
             request,
@@ -233,6 +176,7 @@ def verificar_correo(request: HttpRequest, token: str):
     else:
         raise ValueError("La persona no es un participante ni un mentor")
 
+    # No permitir verificar el correo si el Token ha expirado
     if not token_obj.valido() and not persona.verificado():
         logger.debug(f"Token expirado '{token}'", extra={"correo": persona.correo})
         messages.error(
@@ -245,14 +189,17 @@ def verificar_correo(request: HttpRequest, token: str):
             {"motivo": "Token expirado", "token": token},
         )
 
-    if not persona.verificado():
-        ahora = timezone.now()
+    ahora = timezone.now()
 
-        persona.fecha_verificacion_correo = ahora
-        persona.save()
-
+    # Actualizar la fecha de uso del Token aunque la Persona ya esté verificada con otro Token
+    if not token.usado():
         token_obj.fecha_uso = ahora
         token_obj.save()
+
+    # Verificar a la Persona la primera vez que usa un Token de verificación
+    if not persona.verificado():
+        persona.fecha_verificacion_correo = ahora
+        persona.save()
 
         try:
             params = {

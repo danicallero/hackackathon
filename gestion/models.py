@@ -184,6 +184,11 @@ class Persona(PersonaAbstracta):
     class Meta:
         ordering = ["-fecha_registro"]
 
+        permissions = [
+            ("reenviar_verificacion", "Reenviar el correo de verificación"),
+            ("reenviar_confirmacion", "Reenviar el correo de confirmación"),
+        ]
+
 
 class Mentor(Persona):
     telefono = models.CharField(max_length=16, null=False, verbose_name="Teléfono")

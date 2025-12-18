@@ -1,6 +1,6 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
-
-import logging
+import datetime, logging
+from datetime import timedelta
 
 from django.contrib import admin, messages
 from django.urls import reverse
@@ -17,11 +17,76 @@ from gestion.models import (
     TipoPase,
     Token,
 )
+from gestion.utils import enviar_correo_confirmacion, enviar_correo_verificacion
 
 logger = logging.getLogger(__name__)
 
 
-@admin.action(permissions=["aceptar"])
+@admin.action(permissions=["reenviar_verificacion"], description="Reenviar la verificación de correo")
+def reenviar_correo_verificacion(modeladmin, request, queryset):
+    if not request.user.has_perm("gestion.reenviar_verificacion"):
+        modeladmin.message_user(
+            request, "No tienes permiso para realizar esta acción", messages.ERROR
+        )
+        return
+
+    if queryset.count() > 1:
+        modeladmin.message_user(
+            request,
+            "Solo puedes reenviar el correo de verificación a un participante de cada vez.",
+            messages.ERROR,
+        )
+        return
+
+    estado = enviar_correo_verificacion(queryset.first())
+    if estado != 0:
+        modeladmin.message_user(
+            request,
+            f"Error al enviar el correo de verificación ({queryset.first().correo}).",
+            messages.ERROR,
+        )
+        return
+
+    modeladmin.message_user(
+        request,
+        "Correo de verificación reenviado correctamente.",
+        messages.SUCCESS,
+    )
+
+
+@admin.action(permissions=["reenviar_confirmacion"], description="Reenviar la confirmación de plaza")
+def reenviar_correo_confirmacion(modeladmin, request, queryset):
+    if not request.user.has_perm("gestion.reenviar_confirmacion"):
+        modeladmin.message_user(
+            request, "No tienes permiso para realizar esta acción", messages.ERROR
+        )
+        return
+
+    if queryset.count() > 1:
+        modeladmin.message_user(
+            request,
+            "Solo puedes reenviar el correo de confirmación a un participante de cada vez.",
+            messages.ERROR,
+        )
+        return
+
+    estado = enviar_correo_confirmacion(queryset.first())
+    if estado != 0:
+        modeladmin.message_user(
+            request,
+            f"Error al enviar el correo de confirmación ({queryset.first().correo}).",
+            messages.ERROR,
+        )
+        return
+
+    modeladmin.message_user(
+        request,
+        "Correo de confirmación reenviado correctamente.",
+        messages.SUCCESS,
+    )
+
+
+@admin.action(permissions=["aceptar"], description="Aceptar persona(s)")
 def aceptar_personas(modeladmin, request, queryset):
     if not request.user.has_perm("gestion.aceptar_participante"):
         modeladmin.message_user(
@@ -272,6 +337,8 @@ class ParticipanteAdmin(admin.ModelAdmin):
 
     actions = [
         aceptar_personas,
+        reenviar_correo_verificacion,
+        reenviar_correo_confirmacion,
     ]
 
     inlines = [
@@ -313,6 +380,12 @@ class ParticipanteAdmin(admin.ModelAdmin):
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_participante")
+
+    def has_reenviar_verificacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_verificacion")
+
+    def has_reenviar_confirmacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_confirmacion")
 
 
 class MentorAdmin(admin.ModelAdmin):
@@ -387,6 +460,8 @@ class MentorAdmin(admin.ModelAdmin):
 
     actions = [
         aceptar_personas,
+        reenviar_correo_verificacion,
+        reenviar_correo_confirmacion,
     ]
 
     inlines = [
@@ -428,6 +503,12 @@ class MentorAdmin(admin.ModelAdmin):
 
     def has_aceptar_permission(self, request):
         return request.user.has_perm("gestion.aceptar_mentor")
+
+    def has_reenviar_verificacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_verificacion")
+
+    def has_reenviar_confirmacion_permission(self, request):
+        return request.user.has_perm("gestion.reenviar_confirmacion")
 
 
 class TokenAdmin(admin.ModelAdmin):
