@@ -18,12 +18,12 @@ sqlite3 -ifexists db.sqlite3 "SELECT count(*) FROM gestion_persona WHERE correo=
 echo -n "Personas con el correo nuevo: "
 sqlite3 -ifexists db.sqlite3 "SELECT count(*) FROM gestion_persona WHERE correo='$CORREO_NUEVO';"
 
-printf "\n¿Modificar BD? (Y/n) "
+printf "\n¿Modificar BD? (y/N) "
 read -r RESPUESTA
 RESPUESTA_LOWER=$(echo "$RESPUESTA" | tr '[:upper:]' '[:lower:]')
 
 # Comprobar la respuesta
-if [ -z "$RESPUESTA" ] || [ "$RESPUESTA_LOWER" = "y" ]; then
+if [ "$RESPUESTA_LOWER" = "y" ]; then
   echo "
   BEGIN TRANSACTION;
   UPDATE OR ROLLBACK gestion_persona SET correo='$CORREO_NUEVO' WHERE correo='$CORREO_ORIGINAL';
@@ -34,7 +34,7 @@ if [ -z "$RESPUESTA" ] || [ "$RESPUESTA_LOWER" = "y" ]; then
   SELECT 'Tokens actualizados: ' || changes();
   COMMIT;
   " | sqlite3 -ifexists db.sqlite3
-elif [ "$RESPUESTA_LOWER" = "n" ]; then
+elif [ -z "$RESPUESTA" ] || [ "$RESPUESTA_LOWER" = "n" ]; then
   echo "No se ha modificado la BD"
   exit 0
 else
