@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("gestion", "0002_initial_models"),
+        ("gestion", "0003_alter_mentor_options_mentor_ciudad_and_more"),
     ]
 
     operations = [
