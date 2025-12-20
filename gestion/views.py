@@ -156,7 +156,7 @@ def verificar_correo(request: HttpRequest, token: str):
     ahora = timezone.now()
 
     # Actualizar la fecha de uso del Token aunque la Persona ya esté verificada con otro Token
-    if not token.usado():
+    if not token_obj.usado():
         token_obj.fecha_uso = ahora
         token_obj.save()
 
