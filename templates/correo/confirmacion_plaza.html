@@ -1,5 +1,9 @@
 {% extends "correo/marco.html" %}
 
+{% block banner %}
+    <img src="https://{{ host }}/static/img/banner_christmas_hackUDC.png" style="width: 80%; margin: auto; display: block">
+{% endblock banner %}
+
 {% block content %}
     <p>¡Hola, {{ nombre }}!</p>
 

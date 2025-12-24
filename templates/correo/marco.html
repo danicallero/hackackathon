@@ -68,7 +68,9 @@
 <body style="background-color: #181818; font-family: 'Helvetica Neue', 'Segoe UI', Helvetica, sans-serif;font-size: 15px;line-height: 26px;margin: 0; color: white;">
     <div class="gutter" style="padding: 30px;">&nbsp;</div>
     <div class="wrap" style="padding: 30px; max-width: 525px; margin: 0 auto;">
-        <img src="https://{{ host }}/static/img/hackudc.png" style="width: 80%; margin: auto; display: block">
+        {% block banner %}
+            <img src="https://{{ host }}/static/img/hackudc.png" style="width: 80%; margin: auto; display: block">
+        {% endblock banner %}
         {% block content %}{% endblock content %}
 
         <br>
