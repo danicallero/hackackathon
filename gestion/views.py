@@ -244,11 +244,19 @@ def confirmar_plaza(request: HttpRequest, token: str):
         correo=token_obj.persona.correo
     )
 
+    token_verificacion = Token.objects.get(
+        persona__correo=participante.correo, tipo="VERIFICACION"
+    )
+
     if request.method == "GET":
         return render(
             request,
             "confirmar_plaza.html",
-            {"token": token_obj, "participante": participante},
+            {
+                "token": token_obj,
+                "participante": participante,
+                "token_verificacion": token_verificacion,
+            },
         )
 
     if not token_obj.valido() and not participante.confirmado():

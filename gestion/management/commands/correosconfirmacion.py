@@ -1,8 +1,10 @@
 # Copyright (C) 2025-now  p.fernandezf <p@fernandezf.es> & iago.rivas <delthia@delthia.com>
 
-import logging
+import logging, time
 from datetime import datetime, timedelta
+from itertools import batched
 
+from django.conf import settings
 from django.core.management import BaseCommand
 from django.utils import timezone
 
@@ -40,8 +42,10 @@ class Command(BaseCommand):
                 timezone.get_current_timezone()
             )
         else:
-            fecha_expiracion = (timezone.now() + timedelta(days=dias)).replace(
-                hour=23, minute=59, second=59
+            fecha_expiracion = (
+                (timezone.now() + timedelta(days=dias))
+                .astimezone(timezone.get_current_timezone())
+                .replace(hour=23, minute=59, second=59)
             )
 
         if fecha_expiracion < timezone.now():
@@ -64,23 +68,48 @@ class Command(BaseCommand):
                 )
             )
 
-            # # No enviar correo de confirmación a los usuarios a los que ya se les haya enviado
-            # participantes.exclude(correo__in=participantes_con_token.values("correo"))
+            # No enviar correo de confirmación a los usuarios a los que ya se les haya enviado
+            participantes = participantes.exclude(
+                correo__in=participantes_con_token.values("persona_id")
+            )
 
-        for participante in participantes:
-            estado = enviar_correo_confirmacion(participante, fecha_expiracion)
-            if estado != 0:
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Error al mandar el correo a {participante.correo}"
-                    )
-                )
+        self.stdout.write(
+            f"Enviando {participantes.count()} correos de confirmación.",
+            self.style.HTTP_INFO,
+        )
+
+        errores_permitidos = 5
+        inicio_batch = 0
+
+        for batch in batched(participantes, settings.EMAIL_MESSAGE_RATE):
+            if errores_permitidos <= 0:
                 break
 
-            self.stdout.write(
-                self.style.HTTP_INFO(f"Mensaje enviado a {participante.correo}")
-            )
+            # Evitar mandar más del límite de mensajes
+            if time.perf_counter() - inicio_batch < 1:
+                # Añadir 100ms de margen
+                time.sleep(1 - (time.perf_counter() - inicio_batch) + 0.1)
+
+            inicio_batch = time.perf_counter()
+
+            for participante in batch:
+                estado = enviar_correo_confirmacion(participante, fecha_expiracion)
+                if estado != 0:
+                    # Token.objects.get(persona=participante).delete()
+                    errores_permitidos -= 1
+                    logger.error(f"Error al mandar el correo a {participante.correo}")
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Error al mandar el correo a {participante.correo}"
+                        )
+                    )
+                    break
+
+                self.stdout.write(
+                    self.style.HTTP_INFO(f"Mensaje enviado a {participante.correo}")
+                )
         else:
+            logger.info("Todos los correos de confirmación enviados correctamente")
             self.stdout.write(
                 self.style.SUCCESS(
                     "Todos los correos de confirmación enviados correctamente"

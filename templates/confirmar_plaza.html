@@ -14,7 +14,7 @@
     <h1 class="mt-0">Confirmar plaza</h1>
 
     {% if not participante.confirmado and not participante.rechazo and token.valido %}
-        <p>Confirma ahora tu plaza. Tienes hasta el {{ token.fecha_expiracion }}</p>
+        <p>Confirma ahora tu plaza. Tienes hasta el {{ token.fecha_expiracion|date:'d \d\e F \d\e Y' }} (incluido)</p>
     {% elif participante.confirmado and not participante.rechazo %}
         <p>Aceptaste tu plaza. Puedes rechazarla si no vas a venir cuando quieras</p>
     {% elif participante.rechazo %}
@@ -22,6 +22,10 @@
     {% else %}
         <p>Tu token caducó. Si aún quieres aceptar tu plaza, contacta con nosotros a traveś de <a href="mailto:hackudc@gpul.org?subject=[Registro] - Token caducado ({{ token }})">hackudc@gpul.org</a> para ver si esto es posible.</p>
     {% endif %}
+
+    <p>
+        Recuerda que puedes revisar los detalles de tu inscripción <a href="{% url 'verificar-correo' token_verificacion.token %}">aquí</a>.
+    </p>
 
     <div class="flex">
         {% if participante.confirmado and not participante.rechazo or token.valido and not participante.rechazo %}
