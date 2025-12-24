@@ -222,16 +222,16 @@ def verificar_correo(request: HttpRequest, token: str):
 @login_not_required
 @require_http_methods(["GET", "POST"])
 def confirmar_plaza(request: HttpRequest, token: str):
-    # if not es_token(token):
-    #     logger.debug(f"Token inválido '{token}'")
-    #     messages.error(
-    #         request, "El token es inválido. Comprueba que copiaste el enlace completo"
-    #     )
-    #     return render(
-    #         request,
-    #         "verificacion_incorrecta.html",
-    #         {"motivo": "Token inválido", "token": token},
-    #     )
+    if not es_token(token):
+        logger.debug(f"Token inválido '{token}'")
+        messages.error(
+            request, "El token es inválido. Comprueba que copiaste el enlace completo"
+        )
+        return render(
+            request,
+            "verificacion_incorrecta.html",
+            {"motivo": "Token inválido", "token": token},
+        )
 
     token_obj = Token.objects.filter(token=token, tipo="CONFIRMACION").first()
 
