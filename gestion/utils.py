@@ -191,7 +191,7 @@ def enviar_correo_aceptacion_plaza(persona: Persona) -> int:
         "nombre": persona.nombre,
         "host": settings.HOST_REGISTRO,
         "token_verificacion": token_verificacion,
-        "token_confirmacion":  token_confirmacion,
+        "token_confirmacion": token_confirmacion,
     }
 
     try:

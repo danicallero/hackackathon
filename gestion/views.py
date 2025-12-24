@@ -289,7 +289,10 @@ def aceptar_plaza(request: HttpRequest, token: str):
     # Correo confirmación de aceptación
     estado = enviar_correo_aceptacion_plaza(participante)
     if estado != 0:
-        logger.error(f"Error al enviar el correo de que aceptó su plaza a {participante.correo}")
+        logger.error(
+            f"Error al enviar el correo de que aceptó su plaza a {participante.correo}"
+        )
+        messages.error(request, "Error al enviar el correo de que aceptaste la plaza.")
 
     logger.info(
         f"Un participante ha aceptado su plaza.",
@@ -326,7 +329,11 @@ def rechazar_plaza(request: HttpRequest, token: str):
     # Correo confirmación de rechazo
     estado = enviar_correo_rechazo_plaza(participante)
     if estado != 0:
-        logger.error(f"Error al enviar el correo de que rechazó su plaza a {participante.correo}")
+        logger.error(
+            f"Error al enviar el correo de que rechazó su plaza a {participante.correo}"
+        )
+
+        messages.error(request, "Error al enviar el correo de que rechazaste la plaza.")
 
     logger.info(
         f"Un participante ha rechazado su plaza.",
