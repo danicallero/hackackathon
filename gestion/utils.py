@@ -136,12 +136,9 @@ def enviar_correo_confirmacion(
 def enviar_correo_aceptacion_plaza(persona: Persona) -> int:
     """
     Envía la aceptación de plaza a la Persona indicada.
-    Si la Persona tiene un token válido lo reutiliza, modificando la fecha de expiración.
-    En caso contrario, crea uno nuevo.
 
     Argumentos:
         persona: `Persona` a la que enviar el correo.
-        fecha_expiracion: Fecha de expiración del token de confirmación (Opcional).
 
     Salida:
         0: Envío correcto.
@@ -179,12 +176,9 @@ def enviar_correo_aceptacion_plaza(persona: Persona) -> int:
 def enviar_correo_rechazo_plaza(persona: Persona) -> int:
     """
     Envía el rechazo de plaza a la Persona indicada.
-    Si la Persona tiene un token válido lo reutiliza, modificando la fecha de expiración.
-    En caso contrario, crea uno nuevo.
 
     Argumentos:
         persona: `Persona` a la que enviar el correo.
-        fecha_expiracion: Fecha de expiración del token de confirmación (Opcional).
 
     Salida:
         0: Envío correcto.
