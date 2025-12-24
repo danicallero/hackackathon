@@ -75,6 +75,46 @@ def enviar_correo_verificacion(
     return 0
 
 
+def enviar_correo_verificacion_correcta(persona: Persona) -> int:
+    """
+    Envía el correo de verificación correcta a la Persona indicada.
+
+    Argumentos:
+        persona: `Persona` a la que enviar el correo.
+
+    Salida:
+        0: Envío correcto.
+        1: Error en el envío.
+    """
+    token = Token.objects.get(persona=persona, tipo="VERIFICACION")
+
+    params = {
+        "nombre": persona.nombre,
+        "token": token.token,
+        "host": settings.HOST_REGISTRO,
+    }
+
+    try:
+        send_mail(
+            subject=settings.EMAIL_VERIFICACION_CORRECTA_ASUNTO,
+            message=render_to_string("correo/verificacion_correo_correcta.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(persona.correo,),
+            html_message=render_to_string(
+                "correo/verificacion_correo_correcta.html", params
+            ),
+            fail_silently=False,
+        )
+    except ConnectionRefusedError as e:
+        logger.error(f"Error en el envío del correo de verificación correcta:")
+        logger.error(e, stack_info=True, extra={"correo": persona.correo})
+
+        return 1
+
+    logger.info("Correo de confirmación enviado", extra={"correo": persona.correo})
+    return 0
+
+
 def enviar_correo_confirmacion(
     persona: Persona, fecha_expiracion: datetime | None = None
 ) -> int:

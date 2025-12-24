@@ -35,7 +35,12 @@ from gestion.models import (
     TipoPase,
     Token,
 )
-from gestion.utils import enviar_correo_verificacion, enviar_correo_aceptacion_plaza, enviar_correo_rechazo_plaza
+from gestion.utils import (
+    enviar_correo_aceptacion_plaza,
+    enviar_correo_rechazo_plaza,
+    enviar_correo_verificacion,
+    enviar_correo_verificacion_correcta,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -165,29 +170,14 @@ def verificar_correo(request: HttpRequest, token: str):
         persona.fecha_verificacion_correo = ahora
         persona.save()
 
-        try:
-            params = {
-                "nombre": persona.nombre,
-                "token": token_obj.token,
-                "host": request.get_host(),
-            }
-            email = EmailMultiAlternatives(
-                settings.EMAIL_VERIFICACION_CORRECTA_ASUNTO,
-                render_to_string("correo/verificacion_correo_correcta.txt", params),
-                to=(persona.correo,),
-                reply_to=("hackudc@gpul.org",),
-                headers={
-                    "Message-ID": f"hackudc-{token_obj.fecha_creacion.timestamp()}"
-                },
+        estado = enviar_correo_verificacion_correcta(persona)
+        if estado != 0:
+            logger.error(
+                f"Error al enviar el correo de que verificó su correo a {persona.correo}"
             )
-            email.attach_alternative(
-                render_to_string("correo/verificacion_correo_correcta.html", params),
-                "text/html",
+            messages.error(
+                request, "Error al enviar el correo de verificación correcta."
             )
-            email.send(fail_silently=False)
-        except Exception as e:
-            logger.error(f"Error en el envío del correo de verificación correcta:")
-            logger.error(e, stack_info=True, extra={"correo": persona.correo})
 
         logger.info(
             f"Una persona ha verificado su correo.",
