@@ -1,0 +1,12 @@
+¡Hola, {{ nombre }}!
+
+¡Has confirmado tu plaza en el HackUDC 2026!
+Próximamente recibirás el pase para el evento, y más información relevante
+
+Recuerda que siempre puedes ver tus datos de registro aquí: https://{{ host }}/verificar/{{ token_verificacion }}.
+Aún estás a tiempo de decirnos si hay un error.
+
+Advertencia: Si no puedes venir, siempre puedes hacérnoslo saber en https://{{ host }}/confirmar/{{ token_confirmacion }}.
+Así, podremos asignar tu plaza a otra persona.
+
+Si tienes alguna duda, escríbenos a hackudc@gpul.org.

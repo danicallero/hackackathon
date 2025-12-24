@@ -131,3 +131,84 @@ def enviar_correo_confirmacion(
 
     logger.info("Correo de confirmación enviado", extra={"correo": persona.correo})
     return 0
+
+
+def enviar_correo_aceptacion_plaza(persona: Persona) -> int:
+    """
+    Envía la aceptación de plaza a la Persona indicada.
+    Si la Persona tiene un token válido lo reutiliza, modificando la fecha de expiración.
+    En caso contrario, crea uno nuevo.
+
+    Argumentos:
+        persona: `Persona` a la que enviar el correo.
+        fecha_expiracion: Fecha de expiración del token de confirmación (Opcional).
+
+    Salida:
+        0: Envío correcto.
+        1: Error en el envío.
+    """
+    token_verificacion = Token.objects.get(persona=persona, tipo="VERIFICACION")
+    token_confirmacion = Token.objects.get(persona=persona, tipo="CONFIRMACION")
+
+    params = {
+        "nombre": persona.nombre,
+        "host": settings.HOST_REGISTRO,
+        "token_verificacion": token_verificacion,
+        "token_confirmacion":  token_confirmacion,
+    }
+
+    try:
+        send_mail(
+            subject=settings.EMAIL_ACEPTACION_ASUNTO,
+            message=render_to_string("correo/aceptacion_plaza.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(persona.correo,),
+            html_message=render_to_string("correo/aceptacion_plaza.html", params),
+            fail_silently=False,
+        )
+    except ConnectionRefusedError as e:
+        logger.error(f"Error en el envío del correo de aceptación:")
+        logger.error(e, stack_info=True, extra={"correo": persona.correo})
+
+        return 1
+
+    logger.info("Correo de aceptación enviado", extra={"correo": persona.correo})
+    return 0
+
+
+def enviar_correo_rechazo_plaza(persona: Persona) -> int:
+    """
+    Envía el rechazo de plaza a la Persona indicada.
+    Si la Persona tiene un token válido lo reutiliza, modificando la fecha de expiración.
+    En caso contrario, crea uno nuevo.
+
+    Argumentos:
+        persona: `Persona` a la que enviar el correo.
+        fecha_expiracion: Fecha de expiración del token de confirmación (Opcional).
+
+    Salida:
+        0: Envío correcto.
+        1: Error en el envío.
+    """
+    params = {
+        "nombre": persona.nombre,
+        "host": settings.HOST_REGISTRO,
+    }
+
+    try:
+        send_mail(
+            subject=settings.EMAIL_RECHAZO_ASUNTO,
+            message=render_to_string("correo/rechazo_plaza.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(persona.correo,),
+            html_message=render_to_string("correo/rechazo_plaza.html", params),
+            fail_silently=False,
+        )
+    except ConnectionRefusedError as e:
+        logger.error(f"Error en el envío del correo de rechazo:")
+        logger.error(e, stack_info=True, extra={"correo": persona.correo})
+
+        return 1
+
+    logger.info("Correo de rechazo enviado", extra={"correo": persona.correo})
+    return 0

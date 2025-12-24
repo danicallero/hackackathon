@@ -35,7 +35,7 @@ from gestion.models import (
     TipoPase,
     Token,
 )
-from gestion.utils import enviar_correo_verificacion
+from gestion.utils import enviar_correo_verificacion, enviar_correo_aceptacion_plaza, enviar_correo_rechazo_plaza
 
 logger = logging.getLogger(__name__)
 
@@ -296,6 +296,11 @@ def aceptar_plaza(request: HttpRequest, token: str):
     token_obj.fecha_uso = ahora
     token_obj.save()
 
+    # Correo confirmación de aceptación
+    estado = enviar_correo_aceptacion_plaza(participante)
+    if estado != 0:
+        logger.error(f"Error al enviar el correo de que aceptó su plaza a {participante.correo}")
+
     logger.info(
         f"Un participante ha aceptado su plaza.",
         extra={"correo": participante.correo},
@@ -327,6 +332,11 @@ def rechazar_plaza(request: HttpRequest, token: str):
 
     token_obj.fecha_uso = ahora
     token_obj.save()
+
+    # Correo confirmación de rechazo
+    estado = enviar_correo_rechazo_plaza(participante)
+    if estado != 0:
+        logger.error(f"Error al enviar el correo de que rechazó su plaza a {participante.correo}")
 
     logger.info(
         f"Un participante ha rechazado su plaza.",
