@@ -56,7 +56,7 @@ class Command(BaseCommand):
             fecha_aceptacion__isnull=False,
             fecha_confirmacion_plaza__isnull=True,
             fecha_rechazo_plaza__isnull=True,
-        )
+        ).order_by("fecha_registro")
 
         participantes_con_token = Token.objects.filter(
             tipo="CONFIRMACION", persona__in=participantes
