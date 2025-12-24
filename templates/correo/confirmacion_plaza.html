@@ -1,28 +1,53 @@
 {% extends "correo/marco.html" %}
 
 {% block banner %}
-    <img src="https://{{ host }}/static/img/banner_christmas_hackUDC.png" style="width: 80%; margin: auto; display: block">
+    <img src="https://{{ host }}/static/img/banner_christmas_hackUDC.png"
+         style="width: 80%; margin: auto; display: block">
 {% endblock banner %}
 
 {% block content %}
-    <p>¡Hola, {{ nombre }}!</p>
+    <p>¡Ho ho ho, {{ nombre }}!</p>
+
+    <p style="text-align: center; margin-bottom: 20px">
+        Papá Noel ha llegado desde el HackUDC con una sorpresa especial para ti.
+    </p>
+
+    <p style="font-size: 16px; font-weight: bold; text-align: center; margin: 30px 0">
+        Tengo un regalo para ti: ¡Has sido aceptado/a en HackUDC! 🎁
+    </p>
+
+    <!-- Placeholder for Christmas gift image - user will add this -->
+    <div style="text-align: center; margin: 30px 0">
+        <!-- [Christmas gift image will be inserted here] -->
+    </div>
 
     <p>
-        Puedes aceptar tu plaza en HackUDC haciendo clic en el siguiente enlace:
+        Haz clic en este enlace para confirmar tu plaza:
         <a href="https://{{ host }}/confirmar/{{ token }}">https://{{ host }}/confirmar/{{ token }}</a>
     </p>
 
     <p>¡Gracias por animarte a participar!</p>
 
     <p>
-        Tienes hasta el {{ expiracion|date:'d \d\e F \d\e Y' }} (incluido) para aceptarla. Fuera de ese plazo no podremos
+        Tienes hasta el {{ expiracion|date:'d \d\e F \d\e Y' }} (incluido) para aceptarla. Fuera de ese plazo no
+        podremos
         garantizártela.
     </p>
 
     <p>
-        Una vez aceptes tu plaza, no tendrás que hacer nada más, pero si finalmente sabes que no podrás acudir, te
-        agradeceríamos que utilices el mismo enlace para indicárnoslo.
-        <br>
+        Una vez confirmes tu plaza, no tendrás que hacer nada más.
+        <strong>Recibirás más información pronto.</strong> Mientras tanto, te
+        sugerimos que revises nuestra página web o redes sociales para estar al día
+        con las últimas novedades.
+    </p>
+
+    <p>
+        Si finalmente sabes que no podrás acudir, te agradeceríamos que utilices el mismo enlace para indicárnoslo.
+        <br/>
         Así, podremos permitir participar a otra persona de la lista de espera.
+    </p>
+
+    <p style="text-align: center; margin-top: 30px; font-size: 16px">
+        ¡Feliz Navidad y nos vemos en el hackathon! 🎄
     </p>
 {% endblock content %}
