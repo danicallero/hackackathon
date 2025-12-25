@@ -78,6 +78,11 @@ class Command(BaseCommand):
             self.style.HTTP_INFO,
         )
 
+        c = input("¿Continuar? [S/n] ")
+        if c.lower() != "s" and c != "":
+            return
+
+
         errores_permitidos = 5
         inicio_batch = 0
 
