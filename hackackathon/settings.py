@@ -287,7 +287,7 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-EMAIL_MESSAGE_RATE = 5  # Máximo de emails por segundo en la confirmación de correo
+EMAIL_MESSAGE_RATE = 10  # Máximo de emails por segundo en la confirmación de correo
 EMAIL_MAX_ERRORS = 5  # Máximo de errores en el envío de correos de confirmación
 
 SERVER_EMAIL = os.getenv("SERVER_EMAIL")
