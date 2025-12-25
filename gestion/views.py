@@ -196,10 +196,29 @@ def verificar_correo(request: HttpRequest, token: str):
     logger.debug(
         f"Una persona ha revisado sus datos.", extra={"correo": persona.correo}
     )
-    messages.info(
-        request,
-        "Ya habías verificado tu correo. Recibirás más información en breve",
-    )
+
+    if (
+        persona.fecha_aceptacion
+        and not persona.fecha_confirmacion_plaza
+        and not persona.fecha_rechazo_plaza
+    ):
+        messages.warning(request, "Estás aceptado! Revisa tu correo para confirmar tu plaza.")
+    elif (
+        persona.fecha_aceptacion
+        and persona.fecha_confirmacion_plaza
+        and not persona.fecha_rechazo_plaza
+    ):
+        messages.warning(request, "Tu plaza está confirmada!")
+    elif (
+        persona.fecha_aceptacion
+        and persona.fecha_rechazo_plaza
+    ):
+        messages.error(request, "Rechazaste tu plaza.")
+    else:
+        messages.info(
+            request,
+            "Ya habías verificado tu correo. Recibirás más información en breve",
+        )
     return render(
         request,
         "verificacion_correcta.html",
