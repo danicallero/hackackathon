@@ -20,7 +20,7 @@
     {% elif participante.rechazo %}
         <p>Rechazaste tu plaza el {{ participante.fecha_rechazo_plaza }}. Si esto es un error, contacta con nosotros a través de <a href="mailto:hackudc@gpul.org?subject=[Registro] - Recuperar plaza ({{ participante.correo }})">hackudc@gpul.org</a>.</p>
     {% else %}
-        <p>Tu token caducó. Si aún quieres aceptar tu plaza, contacta con nosotros a traveś de <a href="mailto:hackudc@gpul.org?subject=[Registro] - Token caducado ({{ token }})">hackudc@gpul.org</a> para ver si esto es posible.</p>
+        <p>Tu token caducó. Si aún quieres aceptar tu plaza, contacta con nosotros a traveś de <a href="mailto:hackudc@gpul.org?subject=[Registro] - Token caducado ({{ token.token }})">hackudc@gpul.org</a> para ver si esto es posible.</p>
     {% endif %}
 
     <p>
