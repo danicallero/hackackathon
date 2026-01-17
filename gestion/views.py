@@ -22,11 +22,13 @@ from gestion.forms import (
     NormalizacionForm,
     ParticipanteForm,
     PaseForm,
+    PatrocinadorForm,
     Registro,
     RevisarMentorForm,
     RevisarParticipanteForm,
 )
 from gestion.models import (
+    Patrocinador,
     Mentor,
     Participante,
     Pase,
@@ -71,6 +73,11 @@ def registro(request: HttpRequest, *args, **kwargs):
         url = reverse("registro-mentores")
         subclase = Mentor
         subform = MentorForm
+    elif kwargs.get("subclase") == "colaborador":
+        titulo = "Alta de colaboradores para"
+        url = reverse("registro-colaboradores")
+        subclase = Patrocinador
+        subform = PatrocinadorForm
     else:
         raise ValueError("El valor de subclase debe ser 'participante' o 'mentor'.")
 

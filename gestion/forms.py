@@ -6,6 +6,7 @@ from django.utils import timezone
 from gestion.models import (
     Mentor,
     Participante,
+    Patrocinador,
     Presencia,
     RestriccionAlimentaria,
     TipoPase,
@@ -228,3 +229,50 @@ class NormalizacionForm(forms.Form):
         if originales:
             # El valor de choices debe ser un diccionaario o un iterable de tuplas
             self.fields["originales"].choices = zip(originales, originales)
+
+
+class PatrocinadorForm(forms.ModelForm):
+    class Meta:
+        model = Patrocinador
+        fields = [
+            # Datos personales
+            "nombre",
+            "dni",
+            "correo",
+            # "genero",
+            "empresa",
+            # Restricciones alimentarias
+            "restricciones_alimentarias",
+            "detalle_restricciones_alimentarias",
+            # Otros
+            "comidas",
+            "notas",
+        ]
+
+        labels = {
+            "restricciones_alimentarias": "Restricciones alimentarias",
+        }
+
+        help_texts = {
+            "notas": "Otros datos que consideres relevantes.",
+            "comidas": "Selecciona las comidas que crees que tomarás. Esto es orientativo, así que no te preocupes por marcar de más",
+        }
+
+        widgets = {
+            "restricciones_alimentarias": forms.CheckboxSelectMultiple(),
+            "comidas": forms.CheckboxSelectMultiple(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["restricciones_alimentarias"].queryset = (
+            RestriccionAlimentaria.objects.all().order_by("id_restriccion")
+        )
+
+        self.fields["comidas"].queryset = TipoPase.objects.all().order_by(
+            "inicio_validez"
+        )
+
+    class Media:
+        css = {"all": ["css/registro.css"]}

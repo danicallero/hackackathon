@@ -83,10 +83,40 @@ class PersonaAbstracta(models.Model):
         abstract = True
 
 
+class Empresa(models.Model):
+    id_empresa = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = "Empresa"
+        verbose_name_plural = "Empresas"
+        ordering = ["nombre"]
+
+    def __str__(self):
+        return self.nombre
+
+
 class Patrocinador(PersonaAbstracta):
-    empresa = models.CharField(max_length=100)
+    notas = models.TextField(null=True, blank=True)
+    empresa = models.ForeignKey(
+        Empresa,
+        on_delete=models.CASCADE,
+        related_name="empresa",
+        verbose_name="Empresa",
+    )
+    comidas = models.ManyToManyField("TipoPase", blank=True, related_name="%(class)ss")
+
+    # Parte de Persona
+    dni = models.CharField(max_length=9, unique=True, null=False, verbose_name="DNI")
+    genero = models.CharField(
+        max_length=10, choices=GENEROS, null=False, verbose_name="Género"
+    )
+    fecha_registro = models.DateTimeField(
+        auto_now_add=True, verbose_name="Fecha de registro"
+    )
 
     class Meta(PersonaAbstracta.Meta):
+        ordering = ["correo"]
         verbose_name = "Patrocinador"
         verbose_name_plural = "Patrocinadores"
 
@@ -300,7 +330,7 @@ class TipoPase(models.Model):
         ordering = ["inicio_validez"]
 
     def __str__(self):
-        return f"{self.nombre} (Desde {self.inicio_validez})"
+        return f"{self.nombre}"
 
 
 class Pase(models.Model):

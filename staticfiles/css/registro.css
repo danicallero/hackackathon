@@ -191,12 +191,7 @@ fieldset>div {
     margin-top: 0;
 }
 
-#id_quiere_creditos_helptext,
-#id_cv_helptext,
-#id_notas_helptext {
-    font-style: italic;
-    font-size: 80%;
-}
+.helptext { font-style: italic; font-size: 80%; }
 
 #submit-ancho {
     background-color: var(--amarillo-hackudc);

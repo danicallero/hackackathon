@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import ngettext
 
 from gestion.models import (
+    Empresa,
     Mentor,
     Participante,
     Pase,
@@ -22,7 +23,10 @@ from gestion.utils import enviar_correo_confirmacion, enviar_correo_verificacion
 logger = logging.getLogger(__name__)
 
 
-@admin.action(permissions=["reenviar_verificacion"], description="Reenviar la verificación de correo")
+@admin.action(
+    permissions=["reenviar_verificacion"],
+    description="Reenviar la verificación de correo",
+)
 def reenviar_correo_verificacion(modeladmin, request, queryset):
     if not request.user.has_perm("gestion.reenviar_verificacion"):
         modeladmin.message_user(
@@ -54,7 +58,10 @@ def reenviar_correo_verificacion(modeladmin, request, queryset):
     )
 
 
-@admin.action(permissions=["reenviar_confirmacion"], description="Reenviar la confirmación de plaza")
+@admin.action(
+    permissions=["reenviar_confirmacion"],
+    description="Reenviar la confirmación de plaza",
+)
 def reenviar_correo_confirmacion(modeladmin, request, queryset):
     if not request.user.has_perm("gestion.reenviar_confirmacion"):
         modeladmin.message_user(
@@ -566,3 +573,4 @@ admin.site.register(Presencia)
 admin.site.register(TipoPase)
 admin.site.register(Pase)
 admin.site.register(Token, TokenAdmin)
+admin.site.register(Empresa)
