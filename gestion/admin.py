@@ -564,8 +564,42 @@ class TokenAdmin(admin.ModelAdmin):
         return None
 
 
+class PatrocinadorAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (
+            "Personal",
+            {
+                "fields": [
+                    "nombre",
+                    "correo",
+                    "dni",
+                    "empresa",
+                    "restricciones_alimentarias",
+                    "detalle_restricciones_alimentarias",
+                ]
+            },
+        ),
+        (
+            "Evento",
+            {
+                "fields": [
+                    "acreditacion",
+                    "comidas",
+                    "notas",
+                ]
+            },
+        ),
+    ]
+
+    list_display = ["correo", "nombre", "empresa"]
+
+    list_filter = ["empresa", "comidas"]
+
+    search_fields = ["correo", "nombre"]
+
+
 # Register your models here.
-admin.site.register(Patrocinador)
+admin.site.register(Patrocinador, PatrocinadorAdmin)
 admin.site.register(Mentor, MentorAdmin)
 admin.site.register(Participante, ParticipanteAdmin)
 admin.site.register(RestriccionAlimentaria)
