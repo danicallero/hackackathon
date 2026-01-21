@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from gestion.models import Persona, Token
+from gestion.models import Patrocinador, Persona, Token
 
 logger = logging.getLogger(__name__)
 
@@ -245,4 +245,39 @@ def enviar_correo_rechazo_plaza(persona: Persona) -> int:
         return 1
 
     logger.info("Correo de rechazo enviado", extra={"correo": persona.correo})
+    return 0
+
+
+def enviar_correo_colaborador(colaborador: Patrocinador) -> int:
+    """
+    Envía el correo de confirmación de solicitud recibida al colaborador correspondiente
+
+    Argumentos:
+        colaborador: `Patrocinador` al que enviar el correo.
+
+    Salida:
+        0: Envío correcto.
+        1: Error en el envío.
+    """
+    params = {
+        "nombre": colaborador.nombre,
+        "host": settings.HOST_REGISTRO,
+    }
+
+    try:
+        send_mail(
+            subject=settings.EMAIL_COLABORADOR_ASUNTO,
+            message=render_to_string("correo/solicitud_colaborador.txt", params),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=(colaborador.correo,),
+            html_message=render_to_string("correo/solicitud_colaborador.html", params),
+            fail_silently=False,
+        )
+    except ConnectionRefusedError as e:
+        logger.error(f"Error en el envío del correo de colaborador:")
+        logger.error(e, stack_info=True, extra={"correo": colaborador.correo})
+
+        return 1
+
+    logger.info("Correo de colaborador enviado", extra={"correo": colaborador.correo})
     return 0

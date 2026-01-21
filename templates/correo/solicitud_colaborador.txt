@@ -1,0 +1,11 @@
+¡Hola, {{ nombre }}!
+
+Este correo sirve para informarte de que hemos recibido la solicitud. Gracias por indicarnos las comidas en las que estarás, esto nos ayuda a estimar la comida que necesitaremos. Si finalmente acudirás a más comidas, no es necesario que nos avises, simplemente recógelas a la hora correspondiente sin problema.
+
+Utilizaremos esta dirección de correo para comunicarte toda la información que necesites saber antes y durante el evento.
+
+¡Muchas gracias por colaborar con HackUDC!
+
+Un saludo,
+Organización HackUDC
+Grupo de Programadores e Usuarios de Linux

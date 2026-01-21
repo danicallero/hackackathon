@@ -8,12 +8,7 @@ from gestion import views
 urlpatterns = [
     path("", views.registro, {"subclase": "participante"}, name="registro"),
     path("mentores", views.registro, {"subclase": "mentor"}, name="registro-mentores"),
-    path(
-        "colaboradores",
-        views.registro,
-        {"subclase": "colaborador"},
-        name="registro-colaboradores",
-    ),
+    path("colaboradores", views.colaboradores, name="registro-colaboradores"),
     path("media/cv/<archivo>", views.cvs),
     path("verificar/<token>", views.verificar_correo, name="verificar-correo"),
     path("confirmar/<token>", views.confirmar_plaza, name="confirmar-plaza"),

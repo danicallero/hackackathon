@@ -42,6 +42,7 @@ from gestion.utils import (
     enviar_correo_rechazo_plaza,
     enviar_correo_verificacion,
     enviar_correo_verificacion_correcta,
+    enviar_correo_colaborador,
 )
 
 logger = logging.getLogger(__name__)
@@ -73,11 +74,6 @@ def registro(request: HttpRequest, *args, **kwargs):
         url = reverse("registro-mentores")
         subclase = Mentor
         subform = MentorForm
-    elif kwargs.get("subclase") == "colaborador":
-        titulo = "Alta de colaboradores para"
-        url = reverse("registro-colaboradores")
-        subclase = Patrocinador
-        subform = PatrocinadorForm
     else:
         raise ValueError("El valor de subclase debe ser 'participante' o 'mentor'.")
 
@@ -115,6 +111,43 @@ def registro(request: HttpRequest, *args, **kwargs):
     return render(
         request, "registro.html", {"form": form, "titulo": titulo, "url_form": url}
     )
+
+
+@login_not_required
+@require_http_methods(["GET", "POST"])
+def colaboradores(request: HttpRequest):
+    titulo = "Alta de colaboradores para"
+    if request.method == "GET":
+        return render(
+            request,
+            "colaboradores.html",
+            {"form": PatrocinadorForm(), "titulo": titulo},
+        )
+
+    form = PatrocinadorForm(request.POST)
+    if form.is_valid() and request.POST.get("acepta_terminos", False):
+        colaborador = form.save()
+
+        estado = enviar_correo_colaborador(colaborador)
+        if estado != 0:
+            messages.error(
+                request,
+                "Error enviando el correo electrónico. Contacta con nosotros a través de hackudc@gpul.org para confirmar que la solicitud se registró correctamente.",
+            )
+            return render(request, {"form": form, "titulo": titulo})
+        return render(
+            request,
+            "colaboradores.html",
+            {
+                "form": form,
+                "titulo": titulo,
+                "colaborador": colaborador,
+            },
+        )
+
+    logger.info("Formulario entregado con datos incorrectos.")
+    messages.error(request, "Datos incorrectos")
+    return render(request, "registro.html", {"form": form, "titulo": titulo})
 
 
 @login_not_required
@@ -209,17 +242,16 @@ def verificar_correo(request: HttpRequest, token: str):
         and not persona.fecha_confirmacion_plaza
         and not persona.fecha_rechazo_plaza
     ):
-        messages.warning(request, "Estás aceptado! Revisa tu correo para confirmar tu plaza.")
+        messages.warning(
+            request, "Estás aceptado! Revisa tu correo para confirmar tu plaza."
+        )
     elif (
         persona.fecha_aceptacion
         and persona.fecha_confirmacion_plaza
         and not persona.fecha_rechazo_plaza
     ):
         messages.warning(request, "Tu plaza está confirmada!")
-    elif (
-        persona.fecha_aceptacion
-        and persona.fecha_rechazo_plaza
-    ):
+    elif persona.fecha_aceptacion and persona.fecha_rechazo_plaza:
         messages.error(request, "Rechazaste tu plaza.")
     else:
         messages.info(

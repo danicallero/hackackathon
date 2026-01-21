@@ -319,6 +319,7 @@ EMAIL_CONFIRMACION_ASUNTO = "HackUDC 2026 - Confirma tu plaza! 🎄"
 EMAIL_VERIFICACION_CORRECTA_ASUNTO = "HackUDC 2026 - Solicitud registrada correctamente"
 EMAIL_ACEPTACION_ASUNTO = "HackUDC 2026 - Plaza confirmada"
 EMAIL_RECHAZO_ASUNTO = "HackUDC 2026 - Plaza rechazada"
+EMAIL_COLABORADOR_ASUNTO = "HackUDC 2026 - Solicitud recibida"
 # -----------------------------------------------------------------------------
 
 ADMINS = [
