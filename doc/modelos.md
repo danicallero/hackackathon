@@ -17,7 +17,7 @@ erDiagram
         text detalle_restricciones_alimentarias
     }
 
-    PATROCINADOR {
+    COLABORADOR {
         string correo PK, FK
         string empresa
     }

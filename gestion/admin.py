@@ -12,7 +12,7 @@ from gestion.models import (
     Mentor,
     Participante,
     Pase,
-    Patrocinador,
+    Colaborador,
     Presencia,
     RestriccionAlimentaria,
     TipoPase,
@@ -564,7 +564,7 @@ class TokenAdmin(admin.ModelAdmin):
         return None
 
 
-class PatrocinadorAdmin(admin.ModelAdmin):
+class ColaboradorAdmin(admin.ModelAdmin):
     fieldsets = [
         (
             "Personal",
@@ -599,7 +599,7 @@ class PatrocinadorAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(Patrocinador, PatrocinadorAdmin)
+admin.site.register(Colaborador, ColaboradorAdmin)
 admin.site.register(Mentor, MentorAdmin)
 admin.site.register(Participante, ParticipanteAdmin)
 admin.site.register(RestriccionAlimentaria)

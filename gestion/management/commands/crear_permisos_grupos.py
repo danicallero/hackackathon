@@ -10,10 +10,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # modelos_disponibles = [
+        #     "colaborador",
         #     "mentor",
         #     "participante",
         #     "pase",
-        #     "patrocinador",
         #     "persona",
         #     "presencia",
         #     "restriccionalimentaria",

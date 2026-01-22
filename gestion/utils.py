@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-from gestion.models import Patrocinador, Persona, Token
+from gestion.models import Colaborador, Persona, Token
 
 logger = logging.getLogger(__name__)
 
@@ -248,12 +248,12 @@ def enviar_correo_rechazo_plaza(persona: Persona) -> int:
     return 0
 
 
-def enviar_correo_colaborador(colaborador: Patrocinador) -> int:
+def enviar_correo_colaborador(colaborador: Colaborador) -> int:
     """
     Envía el correo de confirmación de solicitud recibida al colaborador correspondiente
 
     Argumentos:
-        colaborador: `Patrocinador` al que enviar el correo.
+        colaborador: `Colaborador` al que enviar el correo.
 
     Salida:
         0: Envío correcto.

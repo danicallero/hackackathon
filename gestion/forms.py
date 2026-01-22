@@ -6,7 +6,7 @@ from django.utils import timezone
 from gestion.models import (
     Mentor,
     Participante,
-    Patrocinador,
+    Colaborador,
     Presencia,
     RestriccionAlimentaria,
     TipoPase,
@@ -231,9 +231,9 @@ class NormalizacionForm(forms.Form):
             self.fields["originales"].choices = zip(originales, originales)
 
 
-class PatrocinadorForm(forms.ModelForm):
+class ColaboradorForm(forms.ModelForm):
     class Meta:
-        model = Patrocinador
+        model = Colaborador
         fields = [
             # Datos personales
             "nombre",

@@ -96,7 +96,7 @@ class Empresa(models.Model):
         return self.nombre
 
 
-class Patrocinador(PersonaAbstracta):
+class Colaborador(PersonaAbstracta):
     notas = models.TextField(null=True, blank=True)
     empresa = models.ForeignKey(
         Empresa,
@@ -112,8 +112,8 @@ class Patrocinador(PersonaAbstracta):
 
     class Meta(PersonaAbstracta.Meta):
         ordering = ["correo"]
-        verbose_name = "Patrocinador"
-        verbose_name_plural = "Patrocinadores"
+        verbose_name = "Colaborador"
+        verbose_name_plural = "Colaboradores"
 
     def __str__(self):
         return f"{self.empresa}: {self.nombre}"

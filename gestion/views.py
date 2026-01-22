@@ -22,13 +22,13 @@ from gestion.forms import (
     NormalizacionForm,
     ParticipanteForm,
     PaseForm,
-    PatrocinadorForm,
+    ColaboradorForm,
     Registro,
     RevisarMentorForm,
     RevisarParticipanteForm,
 )
 from gestion.models import (
-    Patrocinador,
+    Colaborador,
     Mentor,
     Participante,
     Pase,
@@ -121,10 +121,10 @@ def colaboradores(request: HttpRequest):
         return render(
             request,
             "colaboradores.html",
-            {"form": PatrocinadorForm(), "titulo": titulo},
+            {"form": ColaboradorForm(), "titulo": titulo},
         )
 
-    form = PatrocinadorForm(request.POST)
+    form = ColaboradorForm(request.POST)
     if form.is_valid() and request.POST.get("acepta_terminos", False):
         colaborador = form.save()
 
