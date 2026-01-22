@@ -101,16 +101,11 @@ class Patrocinador(PersonaAbstracta):
     empresa = models.ForeignKey(
         Empresa,
         on_delete=models.CASCADE,
-        related_name="empresa",
-        verbose_name="Empresa",
     )
-    comidas = models.ManyToManyField("TipoPase", blank=True, related_name="%(class)ss")
+    comidas = models.ManyToManyField("TipoPase", blank=True)
 
     # Parte de Persona
     dni = models.CharField(max_length=9, unique=True, null=False, verbose_name="DNI")
-    genero = models.CharField(
-        max_length=10, choices=GENEROS, null=False, verbose_name="Género"
-    )
     fecha_registro = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de registro"
     )
