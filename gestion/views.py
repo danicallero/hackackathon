@@ -134,7 +134,9 @@ def colaboradores(request: HttpRequest):
                 request,
                 "Error enviando el correo electrónico. Contacta con nosotros a través de hackudc@gpul.org para confirmar que la solicitud se registró correctamente.",
             )
-            return render(request, {"form": form, "titulo": titulo})
+            return render(
+                request, "colaboradores.html", {"form": form, "titulo": titulo}
+            )
         return render(
             request,
             "colaboradores.html",
