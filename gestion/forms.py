@@ -102,8 +102,8 @@ class MentorForm(forms.ModelForm):
         fields = [
             "nombre",
             "dni",
-            "correo",
             "telefono",
+            "correo",
             "fecha_nacimiento",
             "genero",
             "talla_camiseta",
