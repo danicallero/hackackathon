@@ -4,9 +4,9 @@ from django import forms
 from django.utils import timezone
 
 from gestion.models import (
+    Colaborador,
     Mentor,
     Participante,
-    Colaborador,
     Presencia,
     RestriccionAlimentaria,
     TipoPase,
@@ -238,6 +238,7 @@ class ColaboradorForm(forms.ModelForm):
             # Datos personales
             "nombre",
             "dni",
+            "telefono",
             "correo",
             # "genero",
             "empresa",

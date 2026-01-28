@@ -106,6 +106,7 @@ class Colaborador(PersonaAbstracta):
 
     # Parte de Persona
     dni = models.CharField(max_length=9, unique=True, null=False, verbose_name="DNI")
+    telefono = models.CharField(max_length=16, null=False, verbose_name="Teléfono")
     fecha_registro = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de registro"
     )
