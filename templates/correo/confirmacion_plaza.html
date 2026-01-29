@@ -1,25 +1,11 @@
 {% extends "correo/marco.html" %}
 
-{% block banner %}
-    <img src="https://{{ host }}/static/img/banner_christmas_hackUDC.png"
-         style="width: 100%; margin: auto; display: block">
-{% endblock banner %}
-
 {% block content %}
-    <p>¡Ho ho ho, {{ nombre }}!</p>
-
-    <p style="text-align: center; margin-bottom: 20px">
-        Papá Noel ha llegado desde el HackUDC con una sorpresa especial para ti.
-    </p>
+    <p>¡Hola, {{ nombre }}!</p>
 
     <p style="font-size: 16px; font-weight: bold; text-align: center; margin: 30px 0">
-        Tengo un regalo para ti: ¡Has sido aceptado/a en HackUDC! 🎁
+        Tenemos buenas noticias: ¡Has sido aceptado/a en HackUDC!
     </p>
-
-    <!-- Placeholder for Christmas gift image - user will add this -->
-    <div style="text-align: center; margin: 30px 0">
-        <!-- [Christmas gift image will be inserted here] -->
-    </div>
 
     <p>
         Haz clic en este enlace para confirmar tu plaza:
@@ -29,16 +15,11 @@
     <p>¡Gracias por animarte a participar!</p>
 
     <p>
-        Tienes hasta el {{ expiracion|date:'d \d\e F \d\e Y' }} (incluido) para aceptarla. Fuera de ese plazo no
-        podremos
-        garantizártela.
+        Tienes hasta el {{ expiracion|date:'d \d\e F \d\e Y' }} (incluido) para aceptarla. Fuera de ese plazo no podremos garantizártela.
     </p>
 
     <p>
-        Una vez confirmes tu plaza, no tendrás que hacer nada más.
-        <strong>Recibirás más información pronto.</strong> Mientras tanto, te
-        sugerimos que revises nuestra página web o redes sociales para estar al día
-        con las últimas novedades.
+        Una vez confirmes tu plaza, no tendrás que hacer nada más. <strong>Recibirás más información pronto.</strong> Mientras tanto, te sugerimos que revises nuestra página web o redes sociales para estar al día con las últimas novedades.
     </p>
 
     <p>
@@ -48,6 +29,6 @@
     </p>
 
     <p style="text-align: center; margin-top: 30px; font-size: 16px">
-        ¡Feliz Navidad y nos vemos en el hackathon! 🎄
+        ¡Nos vemos en el hackathon!
     </p>
 {% endblock content %}

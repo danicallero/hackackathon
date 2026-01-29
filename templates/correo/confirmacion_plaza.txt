@@ -1,8 +1,7 @@
-¡Ho ho ho, {{ nombre }}!
+¡Hola, {{ nombre }}!
 
-Papá Noel ha llegado desde el HackUDC con una sorpresa especial para ti.
 
-Tengo un regalo para ti: ¡Has sido aceptado/a en HackUDC! 🎁
+Tenemos buenas noticias: ¡Has sido aceptado/a en HackUDC!
 
 Haz clic en este enlace para confirmar tu plaza:
 https://{{ host }}/confirmar/{{ token }}
@@ -17,4 +16,4 @@ Mientras tanto, te sugerimos que revises nuestra página web o redes sociales pa
 Si finalmente sabes que no podrás acudir, te agradeceríamos que utilices el mismo enlace para indicárnoslo.
 Así, podremos permitir participar a otra persona de la lista de espera.
 
-¡Feliz Navidad y nos vemos en el hackathon! 🎄
+¡Nos vemos en el hackathon!
