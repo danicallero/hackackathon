@@ -84,6 +84,48 @@ después de haberla rechazado.
 
 Aún está en proceso, pero hay alguna información disponible en los archivos `.md` de [la carpeta doc](doc).
 
+### Pases de PassKit
+
+El sistema genera pases personalizados con QR para check-in en el evento. Los pases se guardan en `passkit/`
+
+#### Estructura de directorios
+
+```
+passkit/
+├── pkpass/     ← Archivos .pkpass (Apple Wallet)
+└── qr/         ← Imágenes QR (.qr.png)
+```
+
+#### Generar pases (Resumen)
+
+El sistema puede generar pases de Apple Wallet con QR para participantes. Para detalles completos y opciones avanzadas (certificados, personalización...) consulta la documentación completa en `doc/passkit.md`.
+
+Comandos útiles:
+
+```bash
+# Generar pase para todos los correos
+python manage.py generar_pases --todos
+
+# Generar pase para un correo específico
+python manage.py generar_pases --correo usuario@example.com
+
+# Generar pase solo QR (testing, no .pkpass)
+python manage.py generar_pases --correo test@test.com --skip-cert-check
+```
+
+> Para uso en código y variables de entorno completas, ver `doc/passkit.md`.
+
+#### Características del pase
+
+- **QR Code**: Contiene el correo electrónico del participante
+- **Identificador único**: Usa el correo como `serialNumber` del pase
+- **Campos personalizables**: Nombre, rol (Hacker/Mentor/Sponsor), correo
+- **Ubicación GPS**: Notificación y aparición en la pantalla de inicio el día del evento cuando el usuario está cerca del recinto (opcional)
+
+#### Documentación completa
+
+Ver [doc/passkit.md](doc/passkit.md) para información detallada sobre configuración, troubleshooting y personalización avanzada.
+
 ## Licencia
 
 El proyecto está bajo la licencia AGPLv3, para más info ver [la licencia](LICENSE).

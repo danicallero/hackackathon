@@ -1,6 +1,7 @@
 # Secrets
 .env
 db.sqlite3*
+cert/
 
 # Assets
 media/
@@ -8,6 +9,9 @@ static/
 
 # Logs
 log/*.log
+
+# PassKits and artifacts
+passkit/
 
 # Python
 __pycache__
