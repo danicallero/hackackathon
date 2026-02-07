@@ -6,6 +6,7 @@ from gestion.models import (
     Pase,
     Persona,
     Presencia,
+    RestriccionAlimentaria,
     TipoPase,
 )
 
@@ -51,6 +52,12 @@ class TipoPaseSerializer(serializers.ModelSerializer):
         model = TipoPase
         fields = "__all__"
         # fields = ["id_tipo_pase", "nombre", "inicio_validez"]
+
+
+class RestriccionAlimentariaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestriccionAlimentaria
+        fields = ["id_restriccion", "nombre"]
 
 
 class PaseSerializer(serializers.ModelSerializer):
