@@ -47,6 +47,12 @@ class AsignarAcreditacionSerializer(serializers.ModelSerializer):
         fields = ["correo", "acreditacion"]
 
 
+class PersonaReducidaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Persona
+        fields = ["correo", "nombre", "acreditacion"]
+
+
 class TipoPaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = TipoPase
