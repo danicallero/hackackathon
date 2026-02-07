@@ -26,6 +26,7 @@ class VerPersonaSerializer(RolPersonaMixin, serializers.ModelSerializer):
     restricciones_alimentarias = serializers.PrimaryKeyRelatedField(
         many=True, read_only=True
     )
+    rol = serializers.SerializerMethodField()
 
     class Meta:
         model = Persona
