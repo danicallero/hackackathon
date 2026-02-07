@@ -11,7 +11,18 @@ from gestion.models import (
 )
 
 
-class VerPersonaSerializer(serializers.ModelSerializer):
+class RolPersonaMixin:
+    rol = serializers.SerializerMethodField()
+
+    def get_rol(self, obj: Persona) -> str:
+        if hasattr(obj, "mentor"):
+            return "Mentor"
+        if hasattr(obj, "participante"):
+            return "Hacker"
+        return "Hacker"
+
+
+class VerPersonaSerializer(RolPersonaMixin, serializers.ModelSerializer):
     restricciones_alimentarias = serializers.PrimaryKeyRelatedField(
         many=True, read_only=True
     )
@@ -22,6 +33,7 @@ class VerPersonaSerializer(serializers.ModelSerializer):
             "correo",
             "nombre",
             "dni",
+            "rol",
             "restricciones_alimentarias",
             "detalle_restricciones_alimentarias",
             "compartir_cv",
@@ -47,10 +59,12 @@ class AsignarAcreditacionSerializer(serializers.ModelSerializer):
         fields = ["correo", "acreditacion"]
 
 
-class PersonaReducidaSerializer(serializers.ModelSerializer):
+class PersonaReducidaSerializer(RolPersonaMixin, serializers.ModelSerializer):
+    rol = serializers.SerializerMethodField()
+
     class Meta:
         model = Persona
-        fields = ["correo", "nombre", "acreditacion"]
+        fields = ["correo", "nombre", "acreditacion", "rol"]
 
 
 class TipoPaseSerializer(serializers.ModelSerializer):
